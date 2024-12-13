@@ -43,5 +43,4 @@ export const sendChatMessage = async (message) => {
     }
 };
 
-
 export default api;
