@@ -1,24 +1,35 @@
 import React, { useState } from "react";
-import { sendChatMessage } from "../../services/api"; 
-import { useForm } from "react-hook-form"; 
+import { useForm } from "react-hook-form";
 import BubbleChat from "./BubbleChat";
+import api from "../../services/api"; // Tetap gunakan instance axios
 
 const InputPrompt = () => {
-    const { register, handleSubmit } = useForm(); 
-    const [chatHistory, setChatHistory] = useState([]); 
+    const { register, handleSubmit } = useForm();
+    const [chatHistory, setChatHistory] = useState([]);
+
+    const sendChatMessage = async (message) => {
+        try {
+            console.log("Sending message to:", api.defaults.baseURL + "/chatbots");
+            const response = await api.post("/chatbots", { message });
+            return response.data;
+        } catch (error) {
+            console.error("Error response:", error.response);
+            console.error("Error message:", error.message);
+            throw error;
+        }
+    };
 
     const onSubmit = async (data) => {
         if (!data.message.trim()) {
             console.error("Pesan tidak boleh kosong.");
             return;
         }
-    
+
         const userBubble = { role: "user", message: data.message };
         setChatHistory((prev) => [...prev, userBubble]);
-    
+
         try {
-            const response = await sendChatMessage(data.message);
-            console.log("Respons API:", response);
+            const response = await sendChatMessage(data.message); 
             const botBubble = { 
                 role: "assistant", 
                 message: response?.reply?.trim() || "Tanggapan tidak tersedia."
@@ -29,7 +40,7 @@ const InputPrompt = () => {
             setChatHistory((prev) => [...prev, errorBubble]);
         }
     };
-    
+
     return (
         <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-full max-w-[968px] px-4">
             {/* Tampilkan chat history */}
