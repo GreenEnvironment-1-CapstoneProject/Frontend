@@ -108,9 +108,7 @@ const Detail = () => {
                         setImagePreview(URL.createObjectURL(file));
                         }
                     };
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
+    
     return (
     <div className={`container max-w-[1280px] mx-auto p-4 flex gap-6 pt-[131px]] pt-40 bg-secondary`}>
         <div className="flex-1 w-full sm:w-[778px] flex flex-col gap-6">
@@ -138,7 +136,7 @@ const Detail = () => {
                 {/* Tombol Komentar */}
                 <div className="flex justify-end mt-[48px]">
                     <a
-                    className="flex items-center w-[140px] h-[52px] py-[12] px-[12px]      rounded-lg gap-2 text-sm font-medium text-neutral-800"
+                    className="flex items-center w-[140px] h-[52px] py-[12] px-[12px] rounded-lg gap-2 text-sm font-medium text-neutral-800"
                     >
                     <img src={CommentIcon} alt="Comment" />
                     {comments.length} Komentar
@@ -194,53 +192,69 @@ const Detail = () => {
                 </div>
 
                         {/* List Komentar */}
-                        {isLoading ? (<div>Loading...</div>) : (
+                        {isLoading ? (
+                            <div>Loading...</div>
+                        ) : (
                             <div className="mt-4">
-                            {comments.length === 0 ? (
-                                <div className="text-center text-[#8A8A8A] py-4">
-                                    Belum ada komentar
-                                </div>
-                            ) : (
-                                comments.slice(0, loadMore ? comments.length : 3).map((comment) => (
-
-                                    <div 
-                                        key={comment.id} 
-                                        className="flex items-start gap-4 mb-4"
-                                    >
-                                        
-                                        <img 
-                                            className="w-[50px] h-[50px] rounded-full object-cover" 
-                                            src={comment.user.avatar_url || Blank} 
-                                            alt={`Profile ${comment.user.name}`} 
-                                        />
-                                        <div>
-                                            <div className="text-base font-bold">
-                                                {comment.user.name}
-                                            </div>
-                                            <div className="text-sm text-[#8A8A8A]">
-                                                {comment.updated_at}
-                                            </div>
-                                            {comment.message_image && (
-                                                <img className="mt-2 object-cover w-[632px] h-[282px] rounded-lg shadow-lg " src={comment.message_image} alt="Post" />
-                                            )}
-                                            <div className="text-sm text-[#262626] mt-3">
-                                                {comment.message}
-                                            </div>
-                                        </div>
+                                {/* Pastikan comments adalah array sebelum memprosesnya */}
+                                {Array.isArray(comments) && comments.length === 0 ? (
+                                    <div className="text-center text-[#8A8A8A] py-4">
+                                        Belum ada komentar
                                     </div>
-                                ))
-                            )}
+                                ) : (
+                                    Array.isArray(comments) && comments
+                                        .slice(0, loadMore ? comments.length : 3)
+                                        .map((comment) => {
+                                            // Pastikan comment adalah objek valid
+                                            if (!comment || !comment.user) {
+                                                return null; // Skip jika comment atau user tidak valid
+                                            }
 
-                            {comments.length > 3 && !loadMore && (
-                                <button 
-                                    onClick={handleLoadMoreComments} 
-                                    className="text-blue-500 text-sm font-medium"
-                                >
-                                    Lihat komentar lainnya
-                                </button>
-                            )}
-                        </div>
+                                            return (
+                                                <div 
+                                                    key={comment.id} 
+                                                    className="flex items-start gap-4 mb-4"
+                                                >
+                                                    <img 
+                                                        className="w-[50px] h-[50px] rounded-full object-cover" 
+                                                        src={comment.user.avatar_url || Blank} 
+                                                        alt={`Profile ${comment.user.name || 'Unknown'}`} 
+                                                    />
+                                                    <div>
+                                                        <div className="text-base font-bold">
+                                                            {comment.user.name || 'Unknown User'}
+                                                        </div>
+                                                        <div className="text-sm text-[#8A8A8A]">
+                                                            {comment.updated_at || 'Tidak ada tanggal'}
+                                                        </div>
+                                                        {comment.message_image && (
+                                                            <img 
+                                                                className="mt-2 object-cover w-[632px] h-[282px] rounded-lg shadow-lg" 
+                                                                src={comment.message_image} 
+                                                                alt="Post" 
+                                                            />
+                                                        )}
+                                                        <div className="text-sm text-[#262626] mt-3">
+                                                            {comment.message || 'Tidak ada pesan'}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                )}
+
+                                {Array.isArray(comments) && comments.length > 3 && !loadMore && (
+                                    <button 
+                                        onClick={handleLoadMoreComments} 
+                                        className="text-blue-500 text-sm font-medium"
+                                    >
+                                        Lihat komentar lainnya
+                                    </button>
+                                )}
+                            </div>
                         )}
+
+
                         
                 </div>
             </div>
