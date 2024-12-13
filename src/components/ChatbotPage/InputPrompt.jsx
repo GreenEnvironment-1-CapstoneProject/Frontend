@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import BubbleChat from "./BubbleChat";
-import api from "../../services/api"; // Tetap gunakan instance axios
+import api from "../../services/api"; 
 
 const InputPrompt = () => {
     const { register, handleSubmit } = useForm();
@@ -9,15 +9,19 @@ const InputPrompt = () => {
 
     const sendChatMessage = async (message) => {
         try {
-            console.log("Sending message to:", api.defaults.baseURL + "/chatbots");
+            const endpoint = api.defaults.baseURL + "/chatbots";
+            console.log("Sending message to:", endpoint);
+    
             const response = await api.post("/chatbots", { message });
+            console.log("API response:", response.data); 
             return response.data;
         } catch (error) {
-            console.error("Error response:", error.response);
+            console.error("Error response:", error.response?.data); 
             console.error("Error message:", error.message);
             throw error;
         }
     };
+    
 
     const onSubmit = async (data) => {
         if (!data.message.trim()) {
