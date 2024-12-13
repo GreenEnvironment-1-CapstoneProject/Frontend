@@ -30,7 +30,6 @@ const InputPrompt = () => {
         }
     };
     
-
     return (
         <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-full max-w-[968px] px-4">
             {/* Tampilkan chat history */}
