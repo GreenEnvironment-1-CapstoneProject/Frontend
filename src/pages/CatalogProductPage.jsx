@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Catalog from "../components/CatalogProductPage/Catalog";
 import Hero from "../components/CatalogProductPage/Hero-catalog";
+import StickyCtaButton from "../components/StickyCtaButton";
 const CatalogProductPage = () => {
     
     return <div className="bg-secondary ">
@@ -13,6 +14,7 @@ const CatalogProductPage = () => {
             <Catalog />
         </div>
         <Footer />
+        <StickyCtaButton />
         </div>;
         
 };

@@ -4,7 +4,7 @@ import useAuthStore from "../stores/useAuthStore";
 import Logo from "../assets/png/Logo.png";
 import CartIcon from "../assets/svg/shopping-cart-nav.svg";
 import userIcon from "../assets/svg/user.svg";
-import { Menu as Bar, X, User, LogOutIcon,   } from "lucide-react";
+import { Menu as Bar, X, User, Power,   } from "lucide-react";
 import { logoutAlert, Toast } from "../utils/function/toast";
 const Navbar = ({ active }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -127,7 +127,7 @@ const Navbar = ({ active }) => {
                                     className="w-full text-left flex px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-900 flex-row gap-3"
                                     role="menuitem"
                                     >
-                                    <LogOutIcon size={16}/>
+                                    <Power size={16}/>
                                     Log Out
                                     </button>
                                 </div>
@@ -177,7 +177,7 @@ const Navbar = ({ active }) => {
                                 {token ? (
                                     <>
                                         <Link
-                                    to="/profil"
+                                    to="/profile"
                                     className="w-full px-4 py-2 inline-flex items-center justify-center gap-x-2 text-[15px] font-medium rounded-lg bg-[#2E7D32] text-white shadow-sm hover:bg-[#1B4B1E] focus:outline-none"
                                 ><User />
                                     Profil
@@ -186,7 +186,7 @@ const Navbar = ({ active }) => {
                                     onClick={handleLogout}
                                     className="w-full px-4 py-2 inline-flex items-center justify-center gap-x-2 text-[15px] font-medium rounded-lg border border-[#2E7D32] backdrop-blur-xl text-[#2E7D32] shadow-sm hover:bg-gray-50 focus:outline-none"
                                 >
-                                    <LogOutIcon/>
+                                    <Power/>
                                     Log Out
                                 </button>
                                 </>

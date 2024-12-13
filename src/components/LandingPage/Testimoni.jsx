@@ -51,15 +51,15 @@ import 'swiper/css/pagination';
                         <SwiperSlide key={item.id} className="">
                         <div className="text-neutral ">
                             <div className='w-full  ' >
-                            <img 
+                            <img    
                                 src={Image}
-                                className='w-[100px] h-[100px]   rounded-full object-cover object-top relative top-14 item-center mx-auto justify-center'  
+                                className='w-[100px] h-[100px] rounded-full object-cover object-top relative top-14 item-center mx-auto justify-center'  
                                 alt={item.name} 
                                 />
                             </div>
-                            <div className="flex flex-col justify-center bg-white shadow-lg rounded-xl items-center mx-auto w-[397px] h-[487px]">
+                            <div className="flex flex-col justify-center bg-white shadow-lg rounded-xl items-center mx-auto w-[350px] h-[450px]">
                             <div className="p-5  flex flex-col justify-between">
-                                <div className='text-center   my-32 h-[150px] flex md:items-center justify-center'>
+                                <div className='text-center   my-28 h-[100px] flex md:items-center justify-center'>
                                 <h1>{item.message}</h1>
                                 </div>
                                 <div className='text-center'>

@@ -1,4 +1,4 @@
-import React,{ useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import useSideBarStore from "../../stores/useSideBarStore";
 import Sidebar from "../../components/Admin/Sidebar";
 import Header from "../../components/Admin/Header";
@@ -14,15 +14,19 @@ import { Link } from "react-router";
 import ModalDelete from "../../components/Admin/UsersPage/ModalDelete";
 import ModalView from "../../components/Admin/UsersPage/ModalView";
 import ModalEdit from "../../components/Admin/UsersPage/ModalEdit";
+import userBg from "../../assets/webp/blank.webp";
+
 const Users = () => {
     const { isOpen: sidebarOpen } = useSideBarStore();
     const [selectedPage, setSelectedPage] = useState(1);
     const [users, setUsers] = useState([]);
     const [metadata, setMetadata] = useState({});
     const [selectedUsers, setSelectedUsers] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+
     const fetchUsers = async () => {
         try {
-            const response = await api.get(`/admin/users?pages=${selectedPage}`);
+            const response = await api.get(`/admin/users?page=${selectedPage}`);
             setUsers(response.data.data);
             setMetadata(response.data.metadata);
         } catch (error) {
@@ -42,7 +46,7 @@ const Users = () => {
     };
 
     const handleNextPage = () => {
-        if (selectedPage < metadata.TotalPage) {
+        if (selectedPage < metadata.total_page) {
             setSelectedPage(selectedPage + 1);
         }
     };
@@ -54,8 +58,6 @@ const Users = () => {
         setSelectedUsers(data);
         document.getElementById("my_modal_24").showModal();
     };
-
-    
 
     const handleDelete = async (data) => {
         try {
@@ -72,20 +74,28 @@ const Users = () => {
             });
         }
     };
-        useEffect(() => {   
-            fetchUsers();
-        }, []);
+    useEffect(() => {
+        fetchUsers();
+    }, [selectedPage]);
+
+    console.log(metadata);
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value); // Menyimpan nilai query pencarian
+    };
+
+    const filteredUser = users?.filter(
+        (user) => user.name.toLowerCase().includes(searchQuery.toLowerCase()), // Mencocokkan nama kategori dengan query pencarian
+    );
 
     return (
         <div>
-        <Sidebar    isOpen={sidebarOpen} 
-                    toggleSidebar={() => sidebarOpen(!sidebarOpen)}
-                    active="Pengguna" /> {/* ini aja yg diganti Sesuai yang dikerjain */}
-        <div className={`transition-all duration-300 ${sidebarOpen ? 'ml-[260px]' : 'ml-28'}`}>
-        <Header />
-        
-            <div className="bg-secondary min-h-screen">
-            <div className="max-w-[100rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+            <Sidebar isOpen={sidebarOpen} toggleSidebar={() => sidebarOpen(!sidebarOpen)} active="Pengguna" /> {/* ini aja yg diganti Sesuai yang dikerjain */}
+            <div className={`transition-all duration-300 ${sidebarOpen ? "ml-[260px]" : "ml-28"}`}>
+                <Header />
+
+                <div className="bg-secondary min-h-screen">
+                    <div className="max-w-[100rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h1 className="font-bold text-2xl text-[#4B5563] mb-4">Pengguna</h1>
@@ -105,6 +115,8 @@ const Users = () => {
                                         type="text"
                                         placeholder="Cari Pengguna"
                                         className="border ps-11 border-gray-300 rounded-lg h-[40px] px-4 w-full focus:outline-none focus:ring-2 focus:ring-primary"
+                                        onChange={handleSearchChange}
+                                        value={searchQuery}
                                     />
                                     <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
                                         <Search className="w-6 h-6 text-gray-400" />
@@ -145,73 +157,82 @@ const Users = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-gray-200">
-                                                    {users.map((user) => (
-                                                        <tr key={user.id}>
-                                                            <td className="size-px whitespace-nowrap">
-                                                                <div className="ps-6 py-2">
-                                                                    <label htmlFor="hs-at-with-checkboxes-1" className="flex">
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            className="shrink-0 border-gray-300 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                                                                            id="hs-at-with-checkboxes-1"
-                                                                        />
-                                                                        <span className="sr-only">Checkbox</span>
-                                                                    </label>
-                                                                </div>
-                                                            </td>
-                                                            
-                                                            <td className="size-px whitespace-nowrap">
-                                                                <div className="px-6 py-2 flex items-center gap-x-2">
-                                                                    <img className="inline-block size-[38px] rounded-full w-6 h-6" src={user.avatar_url} alt="Avatar" />
-                                                                    <span className="text-sm font-medium text-[#1F2937] decoration-2">{user.name}</span>
-                                                                </div>
-                                                            </td>
-                                                            <td className="size-px whitespace-nowrap">
-                                                                <div className="px-6 py-2">
-                                                                    <span className="text-sm font-medium text-[#1F2937]">{user.phone}</span>
-                                                                </div>
-                                                            </td>
-                                                            <td className="size-px whitespace-nowrap">
-                                                                <div className="px-6 py-2">
-                                                                    <p className="text-sm font-medium text-[#1F2937]">{user.address}</p>
-                                                                </div>
-                                                            </td>
-                                                            <td className="size-px whitespace-nowrap">
-                                                                <div className="px-6 py-2">
-                                                                    <p className="text-sm font-medium text-[#1F2937]">{user.created_at}</p>
-                                                                </div>
-                                                            </td>
-                                                            <td className="size-px whitespace-nowrap">
-                                                                <div className="px-6 py-2">
-                                                                    <div className="flex items-center gap-x-2">
-                                                                        <button>
-                                                                            <img
-                                                                                src={eye}
-                                                                                alt="eye-icon"
-                                                                                onClick={() => {
-                                                                                    handleShowModal(user);
-                                                                                }}
+                                                    {filteredUser && filteredUser.length > 0 ? (
+                                                        filteredUser.map((user) => (
+                                                            <tr key={user.id}>
+                                                                <td className="size-px whitespace-nowrap">
+                                                                    <div className="ps-6 py-2">
+                                                                        <label htmlFor="hs-at-with-checkboxes-1" className="flex">
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                className="shrink-0 border-gray-300 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                                                                id="hs-at-with-checkboxes-1"
                                                                             />
-                                                                        </button>
-                                                                        <button 
-                                                                        >
-                                                                            <img src={pencil} alt="pencil-icon" 
-                                                                            onClick={() => handleShowModalEdit(user)}/>
-
-                                                                        </button>
-                                                                        <button
-                                                                            onClick={() => {
-                                                                            document.getElementById("my_modal_23").showModal();
-                                                                            setSelectedUsers(user.id);
-                                                                        }}
-                                                                        >
-                                                                            <img src={trash} alt="trash-icon" />
-                                                                        </button>
+                                                                            <span className="sr-only">Checkbox</span>
+                                                                        </label>
                                                                     </div>
-                                                                </div>
+                                                                </td>
+
+                                                                <td className="size-px whitespace-nowrap">
+                                                                    <div className="px-6 py-2 flex items-center gap-x-2">
+                                                                        <img
+                                                                            className="inline-block size-[38px] rounded-full w-6 h-6 object-cover"
+                                                                            src={user.avatar_url ? user.avatar_url : userBg}
+                                                                            alt="Avatar"
+                                                                        />
+                                                                        <span className="text-sm font-medium text-[#1F2937] decoration-2">{user.name}</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="size-px whitespace-nowrap">
+                                                                    <div className="px-6 py-2">
+                                                                        <span className="text-sm font-medium text-[#1F2937]">{user.phone}</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="size-px whitespace-nowrap">
+                                                                    <div className="px-6 py-2">
+                                                                        <p className="text-sm font-medium text-[#1F2937]">{user.address}</p>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="size-px whitespace-nowrap">
+                                                                    <div className="px-6 py-2">
+                                                                        <p className="text-sm font-medium text-[#1F2937]">{user.created_at}</p>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="size-px whitespace-nowrap">
+                                                                    <div className="py-2">
+                                                                        <div className="flex items-center gap-x-2">
+                                                                            <button>
+                                                                                <img
+                                                                                    src={eye}
+                                                                                    alt="eye-icon"
+                                                                                    onClick={() => {
+                                                                                        handleShowModal(user);
+                                                                                    }}
+                                                                                />
+                                                                            </button>
+                                                                            <button>
+                                                                                <img src={pencil} alt="pencil-icon" onClick={() => handleShowModalEdit(user)} />
+                                                                            </button>
+                                                                            <button
+                                                                                onClick={() => {
+                                                                                    document.getElementById("my_modal_23").showModal();
+                                                                                    setSelectedUsers(user.id);
+                                                                                }}
+                                                                            >
+                                                                                <img src={trash} alt="trash-icon" />
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                    ) : (
+                                                        <tr>
+                                                            <td colSpan={6} className="text-center py-4">
+                                                                No data available
                                                             </td>
                                                         </tr>
-                                                    ))}
+                                                    )}
                                                 </tbody>
                                             </table>
 
@@ -222,7 +243,7 @@ const Users = () => {
                             </div>
                             <ModalDelete handleDelete={() => handleDelete(selectedUsers)} />
                             <ModalEdit selectedUser={selectedUsers} />
-                            <ModalView selectedUser={selectedUsers} /> 
+                            <ModalView selectedUser={selectedUsers} />
                             <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center">
                                 <div className="max-w-sm space-y-3">
                                     <select
@@ -265,7 +286,7 @@ const Users = () => {
                                             type="button"
                                             className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
                                             onClick={handleNextPage}
-                                            disabled={selectedPage === metadata.TotalPage}
+                                            disabled={selectedPage === metadata.total_page}
                                         >
                                             Next
                                             <svg
@@ -290,8 +311,8 @@ const Users = () => {
                         {/* End Card */}
                     </div>
                     {/* End Table Section */}
+                </div>
             </div>
-        </div>
         </div>
     );
 };

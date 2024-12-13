@@ -5,6 +5,7 @@ import InputPayment from "../components/PaymentPage/InputPayment";
 import DetailTransaction from "../components/PaymentPage/DetailTransaction";
 import Footer from "../components/Footer";
 import useCart from "../hooks/useCart";
+import StickyCtaButton from "../components/StickyCtaButton";
 
 const PaymentPage = () => {
     const cart = useCart();
@@ -20,6 +21,7 @@ const PaymentPage = () => {
                 </div>
             </div>
             <Footer />
+            <StickyCtaButton />
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import warningIcon from "../../../assets/svg/admin-icon/warning.svg";
 
-const ModalDelete = ({ handleDelete, data }) => {
+const ModalDelete = ({ handleDelete, data, title, subtitle }) => {
     const handleClose = () => {
         document.getElementById("my_modal_3").close();
     };
@@ -11,8 +11,8 @@ const ModalDelete = ({ handleDelete, data }) => {
                 <div className="w-full flex justify-center">
                     <img src={warningIcon} alt="warning-icon" />
                 </div>
-                <h1 className="font-bold text-2xl text-[#1F2937] mt-5 mb-3">Hapus Produk</h1>
-                <p className="text-[#6B7280] text-base font-medium max-w-[310px] mx-auto">Apa kamu yakin ingin menghapus produk ini ?</p>
+                <h1 className="font-bold text-2xl text-[#1F2937] mt-5 mb-3">{title}</h1>
+                <p className="text-[#6B7280] text-base font-medium max-w-[310px] mx-auto">{subtitle}</p>
                 <div className="flex flex-row gap-3 justify-center mt-5">
                     <button
                         className="btn btn-success btn-outline !border-[#2E7D32] !text-[#2E7D32] px-12 hover:!text-white hover:!bg-[#2E7D32]"

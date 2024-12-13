@@ -7,7 +7,7 @@ import Faq from "../components/LandingPage/Faq";
 import Testimoni from "../components/LandingPage/Testimoni";
 import ContactUs from "../components/LandingPage/ContactUs";
 import Footer from "../components/Footer";
-
+import StickyCtaButton from "../components/StickyCtaButton";
 import BgHero from "../assets/webp/bg-hero.webp";
 
 const LandingPage = () => {
@@ -22,6 +22,7 @@ const LandingPage = () => {
             <Testimoni />
             <ContactUs />
             <Footer />
+            <StickyCtaButton />
         </div>
     );
 };

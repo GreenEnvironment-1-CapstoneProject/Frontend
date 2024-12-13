@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import Hero from "../components/DetailProductPage/HeroDetail";
 import ProductDetail from "../components/DetailProductPage/ProductDetail";
 import useAuthStore from "../stores/useAuthStore";
+import StickyCtaButton from "../components/StickyCtaButton";
 import { useNavigate } from "react-router";
 import { Toast } from "../utils/function/toast";
 
@@ -29,6 +30,7 @@ const DetailProductPage = () => {
                 <ProductDetail />
             </div>
             <Footer />
+            <StickyCtaButton />
         </div>
     );
 };

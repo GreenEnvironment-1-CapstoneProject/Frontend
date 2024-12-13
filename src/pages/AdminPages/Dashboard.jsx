@@ -1,19 +1,49 @@
-import React, { useState } from "react";
-import useSideBarStore from "../../stores/useSideBarStore";
-import Sidebar from "../../components/Admin/Sidebar";
-import Header from "../../components/Admin/Header";
+import AdminLayout from "./AdminLayout";
+import SummaryDashboard from "../../components/Admin/Dashboard/SummaryDashboard";
+import ChartDashboard from "../../components/Admin/Dashboard/ChartDashboard";
+import TopCategory from "../../components/Admin/Dashboard/TopCategory";
+import LastTransaction from "../../components/Admin/Dashboard/LastTransaction";
+import api from "../../services/api";
+import { useEffect, useState } from "react";
+
 const Dashboard = () => {
-    const { isOpen: sidebarOpen } = useSideBarStore();
+    const [dashboard, setDashboard] = useState(null);
+    const [filter, setFilter] = useState("monthly");
+
+    const fetchDashboard = async () => {
+        try {
+            const response = await api.get(`/admin/dashboard?filter=${filter}`);
+            setDashboard(response.data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchDashboard();
+    }, []);
 
     return (
-        <div>
-            <Sidebar isOpen={sidebarOpen} toggleSidebar={() => sidebarOpen(!sidebarOpen)} active="Dashboard" />
-            <div className={`transition-all duration-300 ${sidebarOpen ? "ml-[260px]" : "ml-28"}`}>
-                <Header />
-                {/* Content goes here */}
-                <div className="bg-secondary min-h-screen"></div>
+        <AdminLayout active="Dashboard">
+            <div className="max-w-[100rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="font-bold text-2xl text-[#4B5563]">Dashboard</h1>
+                        <p className="text-lg mb-6 mt-2 text-[#737373] font-medium">Halo Admin, berikut merupakan ringkasan keadaan toko Anda saat ini.</p>
+                    </div>
+                </div>
+
+                {/* Dashboard Atas */}
+                <SummaryDashboard data={dashboard} setFilter={setFilter} fetchDashboard={() => fetchDashboard()} filter={filter} />
+
+                {/* Dashboard tengah */}
+                <div className="flex flex-row gap-5">
+                    <ChartDashboard data={dashboard} filter={filter} />
+                    <TopCategory data={dashboard?.top_categories} filter={filter} />
+                </div>
+                <LastTransaction data={dashboard?.last_transactions} />
             </div>
-        </div>
+        </AdminLayout>
     );
 };
 

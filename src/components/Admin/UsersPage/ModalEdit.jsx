@@ -5,12 +5,19 @@ import api from "../../../services/api";
 import { Toast } from "../../../utils/function/toast";
 const ModalView = ({ selectedUser }) => {
     const [data, setData] = useState({
-        name: selectedUser?.name ?? "",
-        address: selectedUser?.address ?? "",
-        phone: selectedUser?.phone ?? "",
-        gender: selectedUser?.gender ?? "",
+        name:  "",
+        address:  "",
+        phone:  "",
+        gender:  "male",
     });
-    
+    useEffect(() => {
+        setData({
+            name: selectedUser?.name ?? "",
+            address: selectedUser?.address ?? "",
+            phone: selectedUser?.phone ?? "",
+            gender: selectedUser?.gender === "male" ? "male" : "female",
+        });
+    }, [selectedUser]);
     const handleChange = (e) => {
         const { name, value } = e.target;
         setData((prevData) => ({
@@ -65,18 +72,21 @@ const ModalView = ({ selectedUser }) => {
                     </div>
                 </div>
 
-                <div className="flex flex-row items-center justify-between">
-                    <h1 className="font-bold text-[#404040] text-base flex-[1_55%]">Username</h1>
-                    <InputForm
-                        id="username-label"
+                <div className="flex flex-row items-center justify-between my-5">
+                    <h1 className="font-bold text-[#404040] text-base flex-[1_58%] ">Username</h1>
+                    <input 
                         type="text"
+                        name="username"
                         defaultValue={selectedUser?.username}
-                        disabled={true}
                         placeholder="Username"
+                        disabled={true}
+                        className="py-3   w-full ps-5 text-[#1F2937] font-medium 
+                        bg-gray-100 rounded-lg text-sm border outline-none placeholder:text-[#6B7280] 
+                        placeholder:font-semibold placeholder:text-sm"
                     />
                 </div>
-                <div className="flex flex-row items-center justify-between">
-                    <h1 className="font-bold text-[#404040] text-base flex-[1_55%]">Nama</h1>
+                <div className="flex flex-row items-center justify-between ">
+                    <h1 className="font-bold text-[#404040] text-base flex-[1_58%]">Nama</h1>
                     <input 
                         type="text"
                         name="name"
@@ -88,20 +98,24 @@ const ModalView = ({ selectedUser }) => {
                         placeholder:font-semibold placeholder:text-sm"
                     />
                 </div>
-                <div className="flex flex-row items-center justify-between">
-                    <h1 className="font-bold text-[#404040] text-base flex-[1_55%]">Email</h1>
-                    <InputForm
-                        id="email-label"
+                <div className="flex flex-row items-center justify-between my-5">
+                    <h1 className="font-bold text-[#404040] text-base flex-[1_58%]">Email</h1>
+                    <input 
                         type="text"
+                        name="name"
                         defaultValue={selectedUser?.email}
                         disabled={true}
                         placeholder="Email"
+                        className="py-3   w-full ps-5 text-[#1F2937] font-medium 
+                        bg-gray-100 rounded-lg text-sm border outline-none placeholder:text-[#6B7280] 
+                        placeholder:font-semibold placeholder:text-sm"
                     />
+                    
                 </div>
                 <div className="flex flex-row items-center justify-end gap-28 mb-4">
                     <h1 className="font-bold text-[#404040] text-base">Alamat</h1>
                     <textarea
-                        className="textarea textarea-bordered flex-[1_70%]"
+                        className="textarea textarea-bordered w-full"
                         placeholder="Alamat"
                         name="address"
                         value={data.address}
@@ -109,7 +123,7 @@ const ModalView = ({ selectedUser }) => {
                     ></textarea>
                 </div>
                 <div className="flex flex-row items-center justify-between">
-                    <h1 className="font-bold text-[#404040] text-base flex-[1_55%]">No telepon</h1>
+                    <h1 className="font-bold text-[#404040] text-base flex-[1_58%]">No telepon</h1>
                     <input
                         type="text"
                         name="phone"
@@ -121,28 +135,44 @@ const ModalView = ({ selectedUser }) => {
                         placeholder:font-semibold placeholder:text-sm mb-5"
                     />
                 </div>
-                <div className="flex flex-row">
-                    <h1 className="font-bold text-[#404040] text-base">Jenis Kelamin</h1>
-                    <input
-                        type="radio"
-                        name="gender"
-                        id="male"
-                        value="Laki-laki"
-                        className="radio radio-success ml-16 mr-2"
-                        checked={data.gender === "Laki-laki"}
-                        onChange={handleChange}
-                    />
-                    <label htmlFor="male">Laki-laki</label>
-                    <input
-                        type="radio"
-                        name="gender"
-                        id="female"
-                        value="Perempuan"
-                        className="radio radio-success ml-16 mr-2"
-                        checked={data.gender === "Perempuan"}
-                        onChange={handleChange}
-                    />
-                    <label htmlFor="female">Perempuan</label>
+                <div className="flex flex-row items-center space-x-4">
+                <label className="text-xl w-32 py-3">Jenis Kelamin</label>
+                <div className="flex items-center space-x-3">
+                    <div className="flex">
+                        <input
+                            type="radio"
+                            name="gender"
+                            id="male"
+                            value="male"
+                            checked={data.gender === 'male'}
+                            onChange={handleChange}
+                            className="shrink-0 mt-0.5 radio radio-success"
+                        />
+                        <label 
+                            htmlFor="male" 
+                            className="text-md text-gray-500 ml-2"
+                        >
+                            Laki-laki
+                        </label>
+                        </div>
+                        <div className="flex">
+                            <input
+                                type="radio"
+                                name="gender"
+                                id="female"
+                                value="female"
+                                checked={data.gender === 'female'}
+                                onChange={handleChange}
+                                className="shrink-0 mt-0.5 radio radio-success"
+                            />
+                            <label 
+                                htmlFor="female" 
+                                className="text-md text-gray-500 ml-2 dark:text-gray-400"
+                            >
+                                Perempuan
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <div className="flex flex-row items-center justify-end gap-4 mb-4 mt-5">
                     <button

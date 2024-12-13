@@ -11,6 +11,7 @@ export default {
         },
         screens: {
             mobile: "320px",
+            mobileNormal: "375px",
             mobilelg: "520px",
             tablet: "885px",
             sm: "640px",

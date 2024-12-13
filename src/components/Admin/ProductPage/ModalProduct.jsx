@@ -3,8 +3,8 @@ import imageBg from "../../../assets/svg/admin-icon/image.svg";
 import InputForm from "../../Login/InputForm";
 import useProductForm from "../../../hooks/useProductForm";
 
-const ModalProduct = () => {
-    const { register, handleSubmit, errors, impacts, imagePreview, handleImageChange, loading, handleModal, closeModal, onSubmit } = useProductForm();
+const ModalProduct = ({fetchProduct}) => {
+    const { register, handleSubmit, errors, impacts, imagePreview, handleImageChange, loading, handleModal, closeModal, onSubmit } = useProductForm(fetchProduct);
 
     return (
         <>
@@ -71,7 +71,6 @@ const ModalProduct = () => {
                         <select
                             className="select w-full max-w-xs border border-slate-300"
                             id="category-impact"
-                            // value={impacts.find((impact) => impact.name === existEdit?.category_impact[0]?.impact_category.name)?.id || ""}
                             defaultValue=""
                             {...register("category_impact", {
                                 required: "Silakan pilih impact yang valid.",

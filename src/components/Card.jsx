@@ -43,14 +43,14 @@ const Card = ({ image, name, description, price, link, product }) => {
                         title="Beli Sekarang"
                         onClick={() => handleClick(product)}
                     /> */}
-                    <a href={link} className="text-white  bg-primary text-xs md:text-[15px] mt-5 w-[150px] md:w-[131px] h-[46px] rounded-xl font-bold hover:bg-[#1B4B1E]">
-                        <p className="md:mt-3.5 md:ml-4 p-2 md:p-0">Beli Sekarang</p>
+                    <a href={link} className="text-white bg-primary text-xs md:text-[15px] mt-5 w-[150px] md:w-[131px] h-[46px] rounded-xl font-bold hover:bg-[#1B4B1E] flex items-center justify-center ">
+                        <p className="p-2 md:p-0 text-center">Beli Sekarang</p>
                     </a>
                     <button
                         onClick={() => handleClick(product)}
                         className="text-primary text-sm md:text-[15px] mt-5 w-[110px] md:w-[131px] h-[46px] rounded-xl font-bold flex items-center justify-center hover:text-[#1B4B1E]"
                     >
-                        <img src={shoppingCart} alt="beli" className="text-primary mr-2 hover:text-[#1B4B1E]" />
+                        <img src={shoppingCart} alt="beli" className="text-primary mr-2 h-7 hover:text-[#1B4B1E]" />
                         <p className="hidden md:flex">Keranjang</p>
                     </button>
                 </div>

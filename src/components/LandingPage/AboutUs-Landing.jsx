@@ -13,8 +13,8 @@ const AboutUsLanding = () => {
                 </div>
                 <div className="w-full md:w-[588px] px-5 md:px-10">
                     <div className="flex-row flex py-2">
-                        <div className="bg-white md:w-[80px] md:h-[46px] w-[40px] h-[23px] rounded-full flex items-center justify-center">
-                            <img src={BookOpen} alt="book-open" className="bg-white  rounded-full flex items-center justify-center" />
+                        <div className="w-1/6  rounded-full flex  justify-center">
+                            <img src={BookOpen} alt="book-open" className="bg-white md:w-[46px] md:h-[46px] w-[23px] h-[23px] md:p-2 p-1 rounded-full" />
                         </div>
                         <div className="text-[#FAFAFA] mx-5 md:text-xl text-sm">
                             <h1 className="font-bold">Hidup Berkelanjutan Jadi Lebih Mudah</h1>
@@ -22,8 +22,8 @@ const AboutUsLanding = () => {
                         </div>
                     </div>
                     <div className="flex-row flex py-2">
-                        <div className="bg-white md:w-[80px] md:h-[46px] w-[40px] h-[23px] rounded-full flex items-center justify-center">
-                            <img src={BookOpen} alt="book-open" className="bg-white  rounded-full flex items-center justify-center" />
+                        <div className="w-1/6  rounded-full flex  justify-center">
+                            <img src={BookOpen} alt="book-open" className="bg-white md:w-[46px] md:h-[46px] w-[23px] h-[23px] md:p-2 p-1 rounded-full" />
                         </div>
                         <div className="text-[#FAFAFA] mx-5 md:text-xl text-sm">
                             <h1 className="font-bold">Pemberdayaan dengan Pengetahuan</h1>
@@ -31,8 +31,8 @@ const AboutUsLanding = () => {
                         </div>
                     </div>
                     <div className="flex-row flex py-2">
-                        <div className="bg-white md:w-[80px] md:h-[46px] w-[40px] h-[23px] rounded-full flex items-center justify-center">
-                            <img src={BookOpen} alt="book-open" className="bg-white  rounded-full flex items-center justify-center" />
+                        <div className="w-1/6  rounded-full flex  justify-center">
+                            <img src={BookOpen} alt="book-open" className="bg-white md:w-[46px] md:h-[46px] w-[23px] h-[23px] md:p-2 p-1 rounded-full" />
                         </div>
                         <div className="text-[#FAFAFA] mx-5 md:text-xl text-sm">
                             <h1 className="font-bold">Pantau Dampak Anda</h1>

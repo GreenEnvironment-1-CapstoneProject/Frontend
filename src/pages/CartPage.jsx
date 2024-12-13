@@ -6,7 +6,7 @@ import CardProducts from "../components/CartPage/CardProducts";
 import CartFooter from "../components/CartPage/CartFooter";
 import useCart from "../hooks/useCart";
 import catalogBg from "../assets/jpg/bg-catalog.jpg";
-
+import StickyCtaButton from "../components/StickyCtaButton";
 const CartPage = () => {
 
     const cart = useCart();
@@ -23,6 +23,7 @@ const CartPage = () => {
                 <CartFooter products={cart.products} {...cart} />
             </div>
             <Footer />
+            <StickyCtaButton />
         </div>
     );
 };

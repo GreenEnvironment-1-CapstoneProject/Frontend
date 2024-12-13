@@ -17,7 +17,7 @@ const RegisterPage = () => {
         register,
         handleSubmit,
         setError,
-        formState: { errors },
+        formState: { errors, isValid },
     } = useForm();
 
     const navigate = useNavigate();
@@ -40,12 +40,11 @@ const RegisterPage = () => {
         try {
             setLoading(true);
             const response = await api.post("/users/register", registerData);
-            if (response.status == 201) {
+            if (response.status === 201) {
                 Toast.fire({
                     icon: "success",
                     title: "Registrasi Akun Berhasil",
                 });
-                setUserData(response);
                 navigate("/login");
             } else {
                 console.warn(response);
@@ -140,7 +139,7 @@ const RegisterPage = () => {
                                     id="remember-me"
                                     name="remember-me"
                                     type="checkbox"
-                                    className="checkbox border-green-700 [--chkbg:theme(colors.green.700)] [--chkfg:white] checked:border-green-700 w-5 h-5 rounded-none"
+                                    className="checkbox border-2 border-[#2E7D32] [--chkbg:#3EA843] [--chkfg:white] checked:border-[#2E7D32]"
                                     {...register("agreeTerms", { required: "Anda harus menyetujui syarat & ketentuan" })}
                                 />
                             </div>
@@ -154,7 +153,9 @@ const RegisterPage = () => {
 
                         <button
                             type="submit"
-                            className="py-3 px-4 inline-flex items-center gap-x-2 text-base font-bold rounded-lg border border-transparent bg-[#2E7D32] text-white hover:bg-[#256428] focus:outline-none focus:bg-[#256428] disabled:opacity-50 disabled:pointer-events-none w-full justify-center"
+                            className={`py-3 px-4 inline-flex items-center gap-x-2 text-base font-bold rounded-lg border border-transparent w-full justify-center ${
+                                isValid ? "bg-[#2E7D32] text-white" : "bg-[#E5E7EB] text-[#6B7280]"
+                            }`}
                             disabled={loading}
                         >
                             {loading ? (

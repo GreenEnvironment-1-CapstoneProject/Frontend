@@ -20,7 +20,7 @@ const LoginPage = () => {
         register,
         handleSubmit,
         setError,
-        formState: { errors },
+        formState: { errors, isValid },
     } = useForm();
 
     const navigate = useNavigate();
@@ -113,12 +113,24 @@ const LoginPage = () => {
                                 showPassword={showPassword}
                                 togglePassword={togglePassword}
                             />
-                            <p className="font-medium text-base text-center cursor-pointer text-[#262626] mb-6">
-                                <Link to={"/forgot-password"}>Lupa Password?</Link>
-                            </p>
+                            <div className="flex flex-row justify-between items-center">
+                                <div className="form-control mb-6">
+                                    <label className="cursor-pointer label !justify-normal gap-4">
+                                        <input type="checkbox" className="checkbox border-2 border-[#2E7D32] [--chkbg:#3EA843] [--chkfg:white] checked:border-[#2E7D32]" />
+                                        <span className="label-text font-medium text-base text-[#262626] ">Remember me</span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <p className="font-medium text-base text-center cursor-pointer text-[#262626] mb-6">
+                                        <Link to={"/forgot-password"}>Lupa Password?</Link>
+                                    </p>
+                                </div>
+                            </div>
                             <button
                                 type="submit"
-                                className="py-3 px-4 inline-flex items-center gap-x-2 text-base font-bold rounded-lg border border-transparent bg-[#2E7D32] text-white hover:bg-[#256428] focus:outline-none focus:bg-[#256428] disabled:opacity-50 disabled:pointer-events-none w-full justify-center"
+                                className={`py-3 px-4 inline-flex items-center gap-x-2 text-base font-bold rounded-lg border border-transparent w-full justify-center ${
+                                    isValid ? "bg-[#2E7D32] text-white" : "bg-[#E5E7EB] text-[#6B7280]"
+                                }`}
                                 disabled={loading}
                             >
                                 {loading ? (

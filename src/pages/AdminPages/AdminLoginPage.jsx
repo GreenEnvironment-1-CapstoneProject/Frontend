@@ -21,7 +21,7 @@ const AdminLoginPage = () => {
         register,
         handleSubmit,
         setError,
-        formState: { errors },
+        formState: { errors, isValid },
     } = useForm();
 
     const navigate = useNavigate();
@@ -41,6 +41,7 @@ const AdminLoginPage = () => {
                     icon: "success",
                     title: "Login Berhasil.",
                 });
+                navigate("/admin/dashboard");
             } else {
                 console.warn(response);
                 Toast.fire({
@@ -48,7 +49,7 @@ const AdminLoginPage = () => {
                     title: "Login Gagal",
                 });
             }
-            navigate("/add-product");
+            navigate("/admin/dashboard");
         } catch (error) {
             if (error.response) {
                 setError(error.response.data.message === "Incorrect password" ? "password" : "email", { type: "server", message: error.response.data.message });
@@ -117,14 +118,16 @@ const AdminLoginPage = () => {
 
                             <div className="form-control mb-6">
                                 <label className="cursor-pointer label !justify-normal gap-4">
-                                    <input type="checkbox" className="checkbox checkbox-success" />
+                                    <input type="checkbox" className="checkbox border-2 border-[#2E7D32] [--chkbg:#3EA843] [--chkfg:white] checked:border-[#2E7D32]" />
                                     <span className="label-text font-medium text-base text-[#262626] ">Remember me</span>
                                 </label>
                             </div>
 
                             <button
                                 type="submit"
-                                className="py-3 px-4 inline-flex items-center gap-x-2 text-base font-bold rounded-lg border border-transparent bg-[#2E7D32] text-white hover:bg-[#256428] focus:outline-none focus:bg-[#256428] disabled:opacity-50 disabled:pointer-events-none w-full justify-center"
+                                className={`py-3 px-4 inline-flex items-center gap-x-2 text-base font-bold rounded-lg border border-transparent w-full justify-center ${
+                                    isValid ? "bg-[#2E7D32] text-white" : "bg-[#E5E7EB] text-[#6B7280]"
+                                }`}
                                 disabled={loading}
                             >
                                 {loading ? (

@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 const Hero = () => {
     return (
         <div className="bg-secondary pt-32">
-            <div className="relative flex flex-col justify-center items-center gap-2  w-[430px] h-[698px]  sm:mx-auto mb-20 rounded-3xl overflow-hidden sm:w-[1328px]">
+            <div className="relative flex flex-col justify-center items-center gap-2  w-full h-[698px]  sm:mx-auto mb-20 rounded-3xl overflow-hidden sm:w-[1328px]">
                 <div
                         className="absolute inset-0 bg-cover bg-center"
                         style={{
