@@ -26,7 +26,7 @@ const ChartDashboard = ({ data, filter }) => {
                     <Calendar width={20} className="absolute top-3 left-[6px]" />
                 </div>
             </div>
-            <CurvedAreaChart />
+            <CurvedAreaChart dashboard={data} />
         </div>
     );
 };

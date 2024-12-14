@@ -3,42 +3,46 @@ import InputForm from "../Login/InputForm";
 import { Link } from "react-router";
 import Key from "../../assets/svg/key.svg";
 import Email from "../../assets/svg/email.svg";
-const EmailSubmit = ({ formData, onNext }) => {
+import api from "../../services/api";
+import { useState } from "react";
+import { Toast } from "../../utils/function/toast";
+const EmailSubmit = ({ setEmailUser, onNext }) => {
+    const [loading, setLoading] = useState(false);
+
     // Mendefinisikan use Form
     const {
         register,
         handleSubmit,
         setError,
-        formState: { errors },
+        formState: { errors, isValid },
     } = useForm();
 
-    //Ketika Form disubmit jalankan fungsi OnSubmit
     const onSubmit = async (data) => {
-        const response = await fakeApiLogin(data);
-        if (!response.success) {
-            setError(response.error.field, { type: "server", message: response.error.message });
-        } else {
-            console.log(data);
-            alert("OTP Sudah Dikirim Ke Emailmu");
-            formData((prev) => ({ ...prev, email: data.email }));
-            onNext();
+        try {
+            setLoading(true);
+            const response = await api.post("/users/forgot-password", data);
+            if (response.status === 200) {
+                Toast.fire({
+                    icon: "success",
+                    title: "OTP Telah dikirim kan Ke Email Kamu",
+                });
+                setEmailUser(data.email);
+                onNext();
+            } else {
+                console.warn(response);
+            }
+        } catch (error) {
+            if (error.response) {
+                setError("email", { type: "server", message: error.response.data.message });
+            } else {
+                Toast.fire({
+                    icon: "error",
+                    title: "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
+                });
+            }
+        } finally {
+            setLoading(false);
         }
-    };
-
-    // Fake API Test Validation
-    const fakeApiLogin = async (data) => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                if (data.email !== "johndoe@gmail.com") {
-                    resolve({
-                        success: false,
-                        error: { field: "email", message: "Email tidak ditemukan" },
-                    });
-                } else {
-                    resolve({ success: true });
-                }
-            }, 500);
-        });
     };
 
     return (
@@ -64,13 +68,22 @@ const EmailSubmit = ({ formData, onNext }) => {
                     })}
                     error={errors.email?.message}
                     placeholder="contoh@email.com"
-                    iconStart={Email}   
+                    iconStart={Email}
                 />
                 <button
                     type="submit"
-                    className="py-3 px-4 inline-flex items-center gap-x-2 text-base font-bold rounded-lg border border-transparent bg-[#2E7D32] text-white hover:bg-[#256428] focus:outline-none focus:bg-[#256428] disabled:opacity-50 disabled:pointer-events-none w-full justify-center mt-6"
+                    className={`py-3 px-4 inline-flex items-center gap-x-2 text-base font-bold rounded-lg border border-transparent w-full justify-center ${
+                        isValid ? "bg-[#2E7D32] text-white" : "bg-[#E5E7EB] text-[#6B7280]"
+                    }`}
+                    disabled={loading}
                 >
-                    Reset Password
+                    {loading ? (
+                        <span className="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full" role="status" aria-label="loading">
+                            <span className="sr-only">Loading...</span>
+                        </span>
+                    ) : (
+                        "Reset Password"
+                    )}
                 </button>
             </form>
             <p className="text-base text-[#A1A1AA] my-[64px] w-full text-center">

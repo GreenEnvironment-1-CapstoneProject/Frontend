@@ -26,7 +26,7 @@ const Users = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await api.get(`/admin/users?pages=${selectedPage}`);
+            const response = await api.get(`/admin/users?page=${selectedPage}`);
             setUsers(response.data.data);
             setMetadata(response.data.metadata);
         } catch (error) {
@@ -46,7 +46,7 @@ const Users = () => {
     };
 
     const handleNextPage = () => {
-        if (selectedPage < metadata.TotalPage) {
+        if (selectedPage < metadata.total_page) {
             setSelectedPage(selectedPage + 1);
         }
     };
@@ -78,12 +78,14 @@ const Users = () => {
         fetchUsers();
     }, [selectedPage]);
 
+    console.log(metadata);
+
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value); // Menyimpan nilai query pencarian
     };
 
     const filteredUser = users?.filter(
-        (user) => user.name.toLowerCase().includes(searchQuery.toLowerCase()), // Mencocokkan nama kategori dengan query pencarian
+        (user) => user.email.toLowerCase().includes(searchQuery.toLowerCase()), // Mencocokkan nama kategori dengan query pencarian
     );
 
     return (
@@ -173,7 +175,11 @@ const Users = () => {
 
                                                                 <td className="size-px whitespace-nowrap">
                                                                     <div className="px-6 py-2 flex items-center gap-x-2">
-                                                                        <img className="inline-block size-[38px] rounded-full w-6 h-6 object-cover" src={user.avatar_url ? user.avatar_url : userBg} alt="Avatar" />
+                                                                        <img
+                                                                            className="inline-block size-[38px] rounded-full w-6 h-6 object-cover"
+                                                                            src={user.avatar_url ? user.avatar_url : userBg}
+                                                                            alt="Avatar"
+                                                                        />
                                                                         <span className="text-sm font-medium text-[#1F2937] decoration-2">{user.name}</span>
                                                                     </div>
                                                                 </td>
@@ -280,7 +286,7 @@ const Users = () => {
                                             type="button"
                                             className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
                                             onClick={handleNextPage}
-                                            disabled={selectedPage === metadata.TotalPage}
+                                            disabled={selectedPage === metadata.total_page}
                                         >
                                             Next
                                             <svg

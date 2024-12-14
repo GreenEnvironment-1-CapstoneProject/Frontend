@@ -1,7 +1,6 @@
 import { Link } from "react-router";
 import AdminLayout from "./AdminLayout";
 import arrow from "../../assets/svg/admin-icon/arrow-right.svg";
-import arrowUpDown from "../../assets/svg/admin-icon/arrows-up-down.svg";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import api from "../../services/api";
@@ -14,13 +13,16 @@ const TransactionsPage = () => {
     const [transactions, setTransactions] = useState([]);
     const [selectedTransaction, setSelectedTransaction] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [metadata, setMetadata] = useState({});
+    const [selectedPage, setSelectedPage] = useState(1);
 
     const users = useUserStore((state) => state.user);
 
     const fetchTransactions = async () => {
         try {
-            const response = await api.get("/admin/transactions");
+            const response = await api.get(`/admin/transactions?pages=${selectedPage}`);
             setTransactions(response.data.data);
+            setMetadata(response.data.metadata);
         } catch (error) {
             console.error(error);
         }
@@ -43,6 +45,24 @@ const TransactionsPage = () => {
     const filteredTransaction = transactions?.filter(
         (transaction) => transaction.name.toLowerCase().includes(searchQuery.toLowerCase()), // Mencocokkan nama kategori dengan query pencarian
     );
+
+    const pages = Array.from({ length: metadata.TotalPage }, (_, index) => index + 1);
+
+    const handlePageChange = (e) => {
+        setSelectedPage(Number(e.target.value));
+    };
+
+    const handlePrevPage = () => {
+        if (selectedPage > 1) {
+            setSelectedPage(selectedPage - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (selectedPage < metadata.TotalPage) {
+            setSelectedPage(selectedPage + 1);
+        }
+    };
 
     return (
         <AdminLayout active="Pesanan">
@@ -203,7 +223,7 @@ const TransactionsPage = () => {
                     </div>
                     <ModalTransaction transaction={selectedTransaction} users={users} />
 
-                    {/* <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center">
+                    <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center">
                         <div className="max-w-sm space-y-3">
                             <select
                                 value={selectedPage}
@@ -265,7 +285,7 @@ const TransactionsPage = () => {
                                 </button>
                             </div>
                         </div>
-                    </div> */}
+                    </div>
                 </div>
                 {/* End Card */}
             </div>

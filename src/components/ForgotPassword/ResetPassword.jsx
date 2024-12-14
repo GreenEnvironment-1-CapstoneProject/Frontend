@@ -2,17 +2,19 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import InputForm from "../Login/InputForm";
 import { Link } from "react-router";
+import api from "../../services/api";
+import { Toast } from "../../utils/function/toast";
 
 const ResetPassword = ({ onNext }) => {
     // State untuk show password login
     const [showPassword, setShowPassword] = useState(false);
-
+    const [loading, setLoading] = useState(false);
     // Mendefinisikan use Form
     const {
         register,
         handleSubmit,
         setError,
-        formState: { errors },
+        formState: { errors, isValid },
         watch,
     } = useForm();
 
@@ -20,8 +22,30 @@ const ResetPassword = ({ onNext }) => {
     const password = watch("password");
 
     const onSubmit = async (data) => {
-        console.log(data);
-        onNext();
+        const passwordData = {
+            new_password: data.new_password,
+        };
+        try {
+            setLoading(true);
+            const response = await api.put("/users/reset-password", passwordData);
+            if (response.status === 200 || response.status === 201) {
+                Toast.fire({
+                    icon: "success",
+                    title: "Reset password berhasil",
+                });
+                onNext();
+            } else {
+                console.warn(response);
+            }
+        } catch (error) {
+            console.error(error);
+            Toast.fire({
+                icon: "error",
+                title: "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Toggle Show or Hide Password
@@ -59,7 +83,7 @@ const ResetPassword = ({ onNext }) => {
                     id="password-label"
                     label="Konfirmasi Password"
                     type={showPassword ? "text" : "password"}
-                    register={register("confirmpassword", {
+                    register={register("new_password", {
                         required: "Kata sandi anda tidak valid.",
                         minLength: {
                             value: 6,
@@ -74,9 +98,18 @@ const ResetPassword = ({ onNext }) => {
                 />
                 <button
                     type="submit"
-                    className="py-3 px-4 inline-flex items-center gap-x-2 text-base font-bold rounded-lg border border-transparent bg-[#2E7D32] text-white hover:bg-[#256428] focus:outline-none focus:bg-[#256428] disabled:opacity-50 disabled:pointer-events-none w-full justify-center mt-6"
+                    className={`py-3 px-4 inline-flex items-center gap-x-2 text-base font-bold rounded-lg border border-transparent w-full justify-center ${
+                        isValid ? "bg-[#2E7D32] text-white" : "bg-[#E5E7EB] text-[#6B7280]"
+                    }`}
+                    disabled={loading}
                 >
-                    Reset Password
+                    {loading ? (
+                        <span className="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full" role="status" aria-label="loading">
+                            <span className="sr-only">Loading...</span>
+                        </span>
+                    ) : (
+                        "Reset Password"
+                    )}
                 </button>
             </form>
             <p className="text-base text-[#A1A1AA] my-[64px] w-full text-center">

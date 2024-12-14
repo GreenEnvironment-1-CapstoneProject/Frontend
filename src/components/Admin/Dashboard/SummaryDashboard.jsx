@@ -3,6 +3,7 @@ import titikKumpul from "../../../assets/svg/admin-icon/titik-kumpul.svg";
 import cartIjo from "../../../assets/svg/admin-icon/cart-ijo.svg";
 import orang from "../../../assets/svg/admin-icon/orang.svg";
 import { formatToIDR } from "../../../utils/function/formatToIdr";
+import IndicatorTrending from "./IndicatorTrending";
 
 const SummaryDashboard = ({ data, setFilter, fetchDashboard, filter }) => {
     const formatter = new Intl.NumberFormat("id-ID", { style: "decimal" });
@@ -45,12 +46,7 @@ const SummaryDashboard = ({ data, setFilter, fetchDashboard, filter }) => {
                         <h3 className="text-3xl font-bold text-[#24282E]">{formatToIDR(data?.total_transactions || 0)}</h3>
                         <img src={titikKumpul} alt="icon-titik-kumpul" />
                     </div>
-                    <div className="flex flex-row items-center gap-2">
-                        <p className="flex flex-row text-base text-[#D02525] font-bold">
-                            {data?.transaction_change.percentage || 0}% <TrendingDown width={16} color="#D02525" />
-                        </p>
-                        <p className="text-sm text-[#727A90]">-{formatter.format(data?.transaction_change.absolute || 0)}</p>
-                    </div>
+                    <IndicatorTrending absolute={data?.transaction_change.absolute || 0} percentage={data?.transaction_change.percentage} />
                 </div>
 
                 <div className="flex-[1_50%] py-5 px-6 border border-[#E5E7EB] rounded-xl">
@@ -60,12 +56,7 @@ const SummaryDashboard = ({ data, setFilter, fetchDashboard, filter }) => {
                         <h3 className="text-3xl font-bold text-[#24282E]">{data?.total_orders || 0}</h3>
                         <img src={cartIjo} alt="icon-titik-kumpul" />
                     </div>
-                    <div className="flex flex-row items-center gap-2">
-                        <p className="flex flex-row text-base text-[#2E7D32] font-bold">
-                            {data?.order_change.percentage || 0}% <TrendingUp width={16} color="#2E7D32" />
-                        </p>
-                        <p className="text-sm text-[#727A90]">+{data?.order_change.absolute}</p>
-                    </div>
+                    <IndicatorTrending absolute={data?.order_change.absolute || 0} percentage={data?.order_change.percentage} />
                 </div>
 
                 <div className="flex-[1_50%] py-5 px-6 border border-[#E5E7EB] rounded-xl">
@@ -75,12 +66,7 @@ const SummaryDashboard = ({ data, setFilter, fetchDashboard, filter }) => {
                         <h3 className="text-3xl font-bold text-[#24282E]">{data?.total_customers || 0}</h3>
                         <img src={orang} alt="icon-titik-kumpul" />
                     </div>
-                    <div className="flex flex-row items-center gap-2">
-                        <p className="flex flex-row text-base text-[#2E7D32] font-bold">
-                            {data?.customer_change.percentage || 0}% <TrendingUp width={16} color="#2E7D32" />
-                        </p>
-                        <p className="text-sm text-[#727A90]">+{data?.customer_change.absolute || 0}</p>
-                    </div>
+                    <IndicatorTrending absolute={data?.customer_change.absolute || 0} percentage={data?.customer_change.percentage} />
                 </div>
             </div>
         </div>

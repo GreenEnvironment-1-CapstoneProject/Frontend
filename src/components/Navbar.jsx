@@ -177,7 +177,7 @@ const Navbar = ({ active }) => {
                                 {token ? (
                                     <>
                                         <Link
-                                    to="/profil"
+                                    to="/profile"
                                     className="w-full px-4 py-2 inline-flex items-center justify-center gap-x-2 text-[15px] font-medium rounded-lg bg-[#2E7D32] text-white shadow-sm hover:bg-[#1B4B1E] focus:outline-none"
                                 ><User />
                                     Profil

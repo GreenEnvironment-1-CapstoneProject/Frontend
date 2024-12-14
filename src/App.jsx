@@ -22,10 +22,13 @@ import UsersPage from "./pages/AdminPages/UsersPage";
 import Products from "./pages/AdminPages/Products";
 import ChallengePage from "./pages/AdminPages/ChallengePage";
 import DetailForumPage from "./pages/DetailForumPage";
-import ProfilPage from "./pages/ProfilPage";
 import AdminRoute from "./routes/AdminRoute";
 import TransactionsPage from "./pages/AdminPages/TransactionsPage";
 import ImpactsPage from "./pages/AdminPages/ImpactsPage";
+import ProfilPage from "./pages/ProfileUsers/ProfilPage";
+import ProfilChallengePage from "./pages/ProfileUsers/ProfilChallengePage";
+import ContributePage from "./pages/ProfileUsers/ContributePage";
+import OrdersPage from "./pages/ProfileUsers/OrdersPage";
 
 const App = () => {
     return (
@@ -41,7 +44,7 @@ const App = () => {
                 <Route path="/detail-tantangan/:id" element={<DetailChallengePage />} />
                 <Route path="/detail-tantangan/:id/day" element={<DayChallengePage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                <Route path="/profile" element={<ProfilPage />} />
+
                 {/* Guest routes (untuk login dan register, hanya bisa diakses oleh user yang belum login) */}
                 <Route element={<GuestRoute redirectPath="/" />}>
                     {/* End User Route */}
@@ -60,6 +63,11 @@ const App = () => {
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/chat" element={<Chatbot />} />
                     <Route path="/payment/:id" element={<PaymentPage />} />
+                    <Route path="/profile" element={<ProfilPage />} />
+                    <Route path="/profile/kontribusi" element={<ContributePage />} />
+                    <Route path="/profile/challenge" element={<ProfilChallengePage />} />
+                    <Route path="/profile/pesanan" element={<OrdersPage/>}/>
+
                 </Route>
 
                 <Route element={<AdminRoute />}>

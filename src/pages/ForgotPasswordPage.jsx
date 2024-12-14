@@ -1,9 +1,5 @@
 import WelcomeSection from "../components/Login/WelcomeSection";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { Link } from "react-router";
-import InputForm from "../components/Login/InputForm";
-import GoogleLogin from "../components/Login/GoogleLogin";
 import EmailSubmit from "../components/ForgotPassword/EmailSubmit";
 import OtpInput from "../components/ForgotPassword/OtpInput";
 import ResetPassword from "../components/ForgotPassword/ResetPassword";
@@ -11,16 +7,8 @@ import { AnimatePresence, motion } from "motion/react";
 import SuccessSection from "../components/ForgotPassword/SuccessSection";
 
 const ForgotPasswordPage = () => {
-    const [formData, setFormData] = useState({
-        email: "",
-        otp: "",
-    });
-
     const [currentStep, setCurrentStep] = useState(1);
-
-    useEffect(() => {
-        console.log(formData);
-    }, [formData]);
+    const [emailUser, setEmailUser] = useState("");
 
     const slideVariants = {
         initial: { opacity: 0, x: -100 },
@@ -36,12 +24,12 @@ const ForgotPasswordPage = () => {
                     <AnimatePresence>
                         {currentStep === 1 && (
                             <motion.div className="w-full" key="email" variants={slideVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.5 }}>
-                                <EmailSubmit formData={setFormData} onNext={() => setCurrentStep(2)} />
+                                <EmailSubmit onNext={() => setCurrentStep(2)} setEmailUser={setEmailUser} />
                             </motion.div>
                         )}
                         {currentStep === 2 && (
                             <motion.div className="w-full" key="otp" variants={slideVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.5 }}>
-                                <OtpInput onNext={() => setCurrentStep(3)} />
+                                <OtpInput onNext={() => setCurrentStep(3)} mode="forgot-password" email={emailUser} endpoint="/users/forgot-password/verify-otp" />
                             </motion.div>
                         )}
                         {currentStep === 3 && (

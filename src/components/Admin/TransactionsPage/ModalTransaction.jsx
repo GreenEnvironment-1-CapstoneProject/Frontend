@@ -69,7 +69,7 @@ const ModalTransaction = ({ transaction, users }) => {
                             </h1>
                         </div>
                         <h1 className="font-semibold text-base text-[#1F2937]">{product.product_quantity}</h1>
-                        <h1 className="font-semibold text-base text-[#1F2937]">{formatToIDR(30000)}</h1>
+                        <h1 className="font-semibold text-base text-[#1F2937]">{formatToIDR(product.price)}</h1>
                     </div>
                 ))}
                 <div className="text-end mt-6">

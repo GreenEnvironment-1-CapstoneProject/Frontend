@@ -46,10 +46,31 @@ const MyChallenge = ({ myChallenges }) => {
                                 </div>
 
                                 {/* Progress */}
+                                {challenge.status === "Done" ? (
+                                    <div className="w-full mt-auto py-[32px]">
+                                    <div className="flex justify-between items-center mb-2 text-xl font-semibold text-black">
+                                        <p>Selesai</p>
+                                        <p>100%</p>
+                                    </div>
+
+                                    <div
+                                        className="flex w-full h-1.5 bg-gray-200 rounded-full overflow-hidden"
+                                        role="progressbar"
+                                        aria-valuenow={100}
+                                        aria-valuemin={0}
+                                        aria-valuemax={100}
+                                    >
+                                        <div
+                                            className="flex flex-col justify-center rounded-full overflow-hidden bg-[#57C15D] text-xs text-white text-center whitespace-nowrap transition duration-500"
+                                            style={{ width: "100%" }}
+                                        />
+                                    </div>
+                                </div>
+                                ): (
                                 <div className="w-full mt-auto py-[32px]">
                                     <div className="flex justify-between items-center mb-2 text-xl font-semibold text-black">
-                                        <p>{`Day ${challenge.currentDay || 1}`}</p>
-                                        <p>{`${challenge.progress || 0}%`}</p>
+                                        <p>Day  1</p>
+                                        <p>0%</p>
                                     </div>
 
                                     <div
@@ -65,6 +86,8 @@ const MyChallenge = ({ myChallenges }) => {
                                         />
                                     </div>
                                 </div>
+                                )}
+                                
 
                                 <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 mt-4">
                                     <div className="flex items-center gap-2 flex-wrap w-full">
@@ -80,10 +103,13 @@ const MyChallenge = ({ myChallenges }) => {
                                     </div>
                                     <Link
 
-                                        className="w-full sm:w-auto h-[50px] py-[13px] px-7 inline-flex justify-center sm:justify-end items-center gap-x-2 text-[16px] font-normal rounded-xl border border-transparent bg-[#2E7D32] text-white hover:bg-[#1B4B1E] focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                                        className="w-full sm:w-auto h-[50px] py-[13px] px-4 inline-flex justify-center sm:justify-end items-center gap-x-2 text-[16px] font-normal rounded-xl border border-transparent bg-[#2E7D32] text-white hover:bg-[#1B4B1E] focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                                         to={`/detail-tantangan/${challenge.id}/day`}
                                     >
-                                        Selengkapnya
+                                        {challenge.status === "Done" ? (
+                                            "Selesai") : (
+                                            "Selengkapnya"
+                                            )}
                                     </Link>
                                 </div>
                             </div>

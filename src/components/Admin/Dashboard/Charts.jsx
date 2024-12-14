@@ -1,6 +1,6 @@
 import Chart from "react-apexcharts";
 
-const CurvedAreaChart = () => {
+const CurvedAreaChart = ({ dashboard }) => {
     const chartOptions = {
         chart: {
             height: 300,
@@ -14,12 +14,12 @@ const CurvedAreaChart = () => {
         },
         series: [
             {
-                name: "Income",
+                name: "Bulan Lalu",
                 data: [18000, 51000, 60000, 38000, 88000, 50000, 40000, 52000, 88000, 80000, 60000, 70000],
             },
             {
-                name: "Outcome",
-                data: [27000, 38000, 60000, 77000, 40000, 50000, 49000, 29000, 42000, 27000, 42000, 50000],
+                name: "Bulan Ini",
+                data: [dashboard?.total_transactions],
             },
         ],
         stroke: {
