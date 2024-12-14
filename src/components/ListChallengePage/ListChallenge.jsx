@@ -3,44 +3,47 @@ import { Link } from "react-router-dom";
 import Pagination from "../Pagination";
 import api from "../../services/api";
 import MyChallenge from "./MyChallenge";
-const ListChallenge = () => {
+const ListChallenge = ({searchParams}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [challenges, setChallenges] = useState([]);
   const [myChallenges, setMyChallenges] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const challengesPerPage = 4;
-
   const getChallenges = async () => {
     try {
       setIsLoading(true);
-  
       // Fetch challenges yang belum diambil
-      const unclaimedResponse = await api.get("/challenges/unclaimed");
-      const unclaimedChallenges = unclaimedResponse.data.data;
-    
-      // Fetch challenges yang sudah diambil
-      const activeResponse = await api.get("/challenges/active");
-      const activeChallenges = activeResponse.data.data;
+      const activeResponse = await api.get(`/challenges/active?page=${currentPage}`);
+      setMyChallenges(activeResponse.data.data || []);
+      const queryParams = new URLSearchParams();
       
+      // Tambahkan halaman
+      queryParams.append('pages', currentPage);
+      
+      // Tambahkan search term jika ada
+      if (searchParams?.searchTerm) {
+          queryParams.append('title', searchParams.searchTerm);
+      }
+      
+      // Tambahkan difficulty level jika ada
+      if (searchParams?.difficultyLevel) {
+          queryParams.append('difficulty', searchParams.difficultyLevel);
+      }
 
-      // Update state untuk challenges yang sudah diambil
-      setMyChallenges(activeChallenges);
-      
+      // Dapatkan URL query string
+      const queryString = queryParams.toString();
+      const unclaimedResponse = await api.get(`/challenges/unclaimed?${queryString}`);
+      const listChallenges = unclaimedResponse.data;
       // Update state untuk challenges yang belum diambil
-      setChallenges(unclaimedChallenges);
-  
-      // Hitung total pages untuk pagination (berdasarkan challenges yang belum diambil)
-      const total = Math.ceil(unclaimedChallenges?.length / challengesPerPage);
-      setTotalPages(total);
-  
+      setChallenges(listChallenges.data);
+      setTotalPages(listChallenges.metadata.Totalpage);
+      setCurrentPage(listChallenges.metadata.Page);
       setIsLoading(false);
     } catch (error) {
       console.error(error);
       setIsLoading(false);
     }
   };
-  
 
   useEffect(() => {
     getChallenges();
@@ -51,13 +54,6 @@ const ListChallenge = () => {
     setCurrentPage(pageNumber);
   };
 
-  // Get challenges for current page
-  const indexOfLastChallenge = currentPage * challengesPerPage;
-  const indexOfFirstChallenge = indexOfLastChallenge - challengesPerPage;
-  const currentChallenges = challenges.slice(
-    indexOfFirstChallenge, 
-    indexOfLastChallenge
-  );
 
   // Render loading state
   if (isLoading) {
@@ -70,6 +66,7 @@ const ListChallenge = () => {
 
   return (
     <div>
+
       <MyChallenge myChallenges={myChallenges} />
       <div className="max-w-screen-xl mx-auto px-[25px] mb-[117px]">
         <div className="py-[40px]">
@@ -77,7 +74,7 @@ const ListChallenge = () => {
             Semua tantangan ({challenges?.length})
           </p>
           <div className="grid grid-min-rows-3 grid-cols-1 sm:grid-cols-2 pt-[24px] md:gap-2">
-            {currentChallenges?.map((challenge) => (
+            {challenges?.map((challenge) => (
               <div
                 key={challenge.ID}
                 className="flex flex-col justify-between min-h-[584px] p-4 w-full md:p-10 mr-[32px] mb-5 rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA]"
@@ -123,7 +120,7 @@ const ListChallenge = () => {
           </div>
         </div>
 
-        {totalPages > 1 && (
+        {totalPages >= 1 && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

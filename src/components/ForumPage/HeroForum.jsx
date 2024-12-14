@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import heroForum from "../../assets/png/heroForum.png";
-import Women from "../../assets/png/women.png";
 import Plus from "../../assets/png/plus-icon.png";
-import Location from "../../assets/png/location-on.png";
 import Emote from "../../assets/png/emote.png";
 import Photo from "../../assets/png/photo.png";
-import UserPlus from "../../assets/png/user-plus.png";
 import { ChevronRight } from "lucide-react";
-
-const HeroForum = () => {
+import api from "../../services/api";
+import { Toast } from "../../utils/function/toast";
+import { set } from "lodash";
+const HeroForum = ({ onPosted }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const [data, setData] = useState({});
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    
     const handleOpenDesktopModal = () => {
         setIsModalOpen(true);
     };
@@ -24,7 +28,72 @@ const HeroForum = () => {
     const handleButtonClick = () => {
         navigate("/post-mobile");
     };
-
+    const getData = async () => {
+        try {
+        const response = await api.get("/users/profile");
+        setData(response.data.data);
+        } catch (error) {
+        console.error("Error fetching profile data:", error);
+        }
+    };
+    useEffect(() => {
+        getData();
+    }, []);
+        
+        
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+        
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("description", description);
+            formData.append("topic_image", selectedFile);
+            
+            try {
+                const response = await api.post("/forums", formData, {
+                    headers: {
+                    "Content-Type": "multipart/form-data",
+                    },
+            });
+                setIsModalOpen(false);
+                Toast.fire({
+                    icon: "success",
+                    title: "Forum berhasil dibuat",
+                })
+                onPosted(true);
+                } catch (error) {
+                Toast.fire({
+                    icon: "error",
+                    title: "Gagal membuat forum",
+                })
+                }
+            };
+            const handleImageChange = (e) => {
+                const file = e.target.files[0];
+                    if (file) {
+                    const fileType = file.type;
+                    const fileSize = file.size;
+    
+                    if (!["image/jpeg", "image/png", "image/jpg"].includes(fileType)) {
+                        Toast.fire({
+                        icon: "error",
+                        title: "Invalid file type",
+                        })
+                        return;
+                    }
+                    
+                    if (fileSize > 1024 * 1024) {
+                        Toast.fire({
+                        icon: "error",
+                        title: "File size exceeds the limit",
+                        })
+                        return;
+                    }
+    
+                    setSelectedFile(file);
+                    setImagePreview(URL.createObjectURL(file));
+                    }
+                };
     return (
         <div className="bg-secondary pt-[80px] sm:pt-[96px] md:pt-40 mb-0 sm:mb-[24px] ">
             <div className="relative group overflow-hidden rounded-0 sm:rounded-lg max-w-full">
@@ -109,50 +178,89 @@ const HeroForum = () => {
                             onClick={handleCloseDesktopModal}
                             className="absolute top-4 right-4 w-[24px] h-[24px] p-[4px] bg-[#2E7D32] text-white rounded-full flex items-center justify-center hover:bg-[#1B4B1E]"
                         >
-                            x
+                        x
                         </button>
 
                         <h3 className="text-lg border-b border-[#D4D4D4] pt-[28px] pb-[19px] w-full text-center font-bold mb-4">Buat Postingan</h3>
 
                         <div className="flex items-center gap-4 mb-4 px-[22px] ">
-                            <img src={Women} alt="User Profile" className="w-[40px] h-[40px] rounded-full" />
+                            <img src={data.avatar_url} alt="User Profile" className="w-[40px] h-[40px] rounded-full" />
                             <div className="flex flex-col">
-                                <p className="font-semibold text-black  text-base">Nama User</p>
+                                <p className="font-semibold text-black  text-base">{data.name}</p>
                                 <p className="text-sm text-black ">Posting ke semua orang</p>
                             </div>
                         </div>
+                        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+                            <div>
+                                <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-700">
+                                Judul
+                                </label>
+                                <input
+                                type="text"
+                                id="title"
+                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-green-primary"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                required
+                                />
+                            </div>
 
-                        <textarea
-                            className="w-full text-sm tetx-[#737373] px-[22px] mb-4 focus:border-[#A1A1AA] focus:outline-none focus:ring-0"
-                            rows="4"
-                            placeholder="Apa yang Anda pikirkan sekarang?"
-                        />
-
-                        <div className="relative flex border border-[#A1A1AA] rounded-xl px-[14px] mb-[24px] mx-[21px] items-center gap-2">
-                            <p className="py-3 flex-1 bg-white text-black font-bold placeholder-black focus:border-[#A1A1AA] focus:outline-none focus:ring-0">Tambahkan ke postingan anda </p>
-
-                            <div className="flex gap-2 h-[24px] ">
-                                <button className="flex items-center w-[24px] h-[24px] justify-center">
+                            <div>
+                                <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-700">
+                                Deskripsi
+                                </label>
+                                <textarea
+                                id="description"
+                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-green-primary"
+                                rows="4"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                required
+                                ></textarea>
+                            </div>
+                            {imagePreview && (
+                                <div className="mb-4">
+                                <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    className="w-full h-[200px] object-cover max-w-sm mx-auto rounded-md"
+                                />
+                                </div>
+                            )}
+                            <div className="relative flex px-[14px] mb-[24px] mx-[21px] items-center gap-2">
+                                <div className="flex gap-2 h-[24px]">
+                                <label
+                                    htmlFor="photo-upload"
+                                    className="flex items-center w-[24px] h-[24px] justify-center cursor-pointer"
+                                >
                                     <img src={Photo} alt="photo" className="w-6 h-6" />
-                                </button>
-                                <button className="flex items-center w-[24px] h-[24px] justify-center">
-                                    <img src={Location} alt="location" className="w-6 h-6" />
-                                </button>
+                                </label>
+                                <input
+                                    id="photo-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={handleImageChange}
+                                />
                                 <button className="flex items-center w-[24px] h-[24px] justify-center">
                                     <img src={Emote} alt="emote" className="w-6 h-6" />
                                 </button>
                                 <button className="flex items-center w-[24px] h-[24px] justify-center">
-                                    <img src={UserPlus} alt="user plus" className="w-6 h-6" />
-                                </button>
-                                <button className="flex items-center w-[24px] h-[24px] justify-center">
                                     <img src={Plus} alt="plus" className="w-6 h-6" />
                                 </button>
+                                </div>
                             </div>
-                        </div>
-
-                        <div className="px-4 pb-4">
-                            <button className="w-full px-4 py-2 bg-[#E5E7EB] hover:bg-green-primary  text-[16px] font-bold hover:text-white rounded-lg  transition-colors">Kirim</button>
-                        </div>
+                            <div className="px-4 pb-4">
+                                <button
+                                type="submit"
+                                className={`w-full px-4 py-2   text-[16px] font-bold  rounded-lg transition-colors
+                                    ${title && description ? "bg-primary hover:cursor-pointer text-white" : "bg-[#E5E7EB] hover:cursor-not-allowed "}
+                                    `}
+                                >
+                                Kirim
+                                </button>
+                            </div>
+                            </form>
                     </div>
                 </div>
             )}

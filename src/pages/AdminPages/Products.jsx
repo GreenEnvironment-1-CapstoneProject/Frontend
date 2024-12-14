@@ -10,7 +10,7 @@ import arrow from "../../assets/svg/admin-icon/arrow-right.svg";
 import { Plus, Search } from "lucide-react";
 import { Link } from "react-router";
 import ModalProduct from "../../components/Admin/ProductPage/ModalProduct";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import api from "../../services/api";
 import { truncateText } from "../../utils/function/truncateText";
 import { formatToIDR } from "../../utils/function/formatToIdr";
@@ -19,6 +19,7 @@ import ModalDelete from "../../components/Admin/ProductPage/ModalDelete";
 import useProductForm from "../../hooks/useProductForm";
 import ModalView from "../../components/Admin/ProductPage/ModalView";
 import ModalEdit from "../../components/Admin/ProductPage/ModalEdit";
+import _ from "lodash";
 
 const Products = () => {
     const { isOpen: sidebarOpen } = useSideBarStore();
@@ -26,8 +27,11 @@ const Products = () => {
     const [metadata, setMetadata] = useState({});
     const [selectedPage, setSelectedPage] = useState(1);
     const [deleteProduct, setDeleteProduct] = useState(null);
-
+    const [searchResults, setSearchResults] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
     const [editProduct, setEditProduct] = useState(null);
+
+    const [sortOrder, setSortOrder] = useState("asc");
 
     const fetchProduct = async () => {
         try {
@@ -84,6 +88,35 @@ const Products = () => {
         document.getElementById("my_modal_2").showModal();
     };
 
+    const fetchSearchResults = async (term) => {
+        if (!term) {
+            setSearchResults([]);
+            return;
+        }
+
+        try {
+            const response = await api.get(`/products?search=${term}`);
+            const { status, data } = response.data;
+
+            if (status && data) {
+                setSearchResults(data);
+            } else {
+                setSearchResults([]);
+            }
+        } catch (error) {
+            console.error("Error fetching search results:", error);
+            setSearchResults([]);
+        }
+    };
+
+    const debounceFetch = useCallback(_.debounce(fetchSearchResults, 1000), []);
+
+    const handleSearch = (event) => {
+        const term = event.target.value;
+        setSearchTerm(term);
+        debounceFetch(term); // Memanggil fungsi yang sudah di-debounce
+    };
+
     return (
         <div>
             <Sidebar isOpen={sidebarOpen} toggleSidebar={() => sidebarOpen(!sidebarOpen)} active="Produk" />
@@ -103,7 +136,7 @@ const Products = () => {
                                     <img src={arrow} alt="Arrow Right" className="inline-block w-1 h-3 mx-2 " /> <strong className="cursor-pointer">Produk</strong>
                                 </p>
                             </div>
-                            <ModalProduct />
+                            <ModalProduct fetchProduct={() => fetchProduct()} />
                         </div>
                         {/* Card */}
                         <div className="p-3 rounded-lg bg-white border border-[#E5E7EB]">
@@ -113,6 +146,8 @@ const Products = () => {
                                         type="text"
                                         placeholder="Cari Produk"
                                         className="border ps-11 border-gray-300 rounded-lg h-[40px] px-4 w-full focus:outline-none focus:ring-2 focus:ring-primary"
+                                        value={searchTerm}
+                                        onChange={handleSearch}
                                     />
                                     <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
                                         <Search className="w-6 h-6 text-gray-400" />
@@ -142,18 +177,18 @@ const Products = () => {
                                                             <th scope="col" className={`${index === 0 ? "pe-6" : "px-6"} py-3 text-start`} key={index}>
                                                                 <div className="flex items-center justify-between">
                                                                     <span className="text-xs font-bold uppercase tracking-wide text-[#2E7D32]">{title}</span>
-                                                                    {index > 0 && index < 6 && (
+                                                                    {/* {index > 0 && index < 6 && (
                                                                         <button>
                                                                             <img src={arrowUpDown} alt="arrow-filter-icon" />
                                                                         </button>
-                                                                    )}
+                                                                    )} */}
                                                                 </div>
                                                             </th>
                                                         ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-gray-200">
-                                                    {products.map((product) => (
+                                                    {(searchTerm && searchResults.length > 0 ? searchResults : products).map((product) => (
                                                         <tr key={product.product_id}>
                                                             <td className="size-px whitespace-nowrap">
                                                                 <div className="ps-6 py-2">
@@ -226,6 +261,13 @@ const Products = () => {
                                                             </td>
                                                         </tr>
                                                     ))}
+                                                    {((searchTerm && searchResults.length === 0) || (!searchTerm && products.length === 0)) && (
+                                                        <tr>
+                                                            <td colSpan={6} className="text-center py-4">
+                                                                No data available
+                                                            </td>
+                                                        </tr>
+                                                    )}
                                                 </tbody>
                                             </table>
 
@@ -236,7 +278,7 @@ const Products = () => {
                             </div>
                             <ModalDelete handleDelete={() => handleDelete(selectedProduct)} title="Hapus Produk" subtitle="Apa kamu yakin ingin menghapus produk ini?" />
                             <ModalView selectedProduct={selectedProduct} />
-                            <ModalEdit selectedProduct={editProduct} />
+                            <ModalEdit selectedProduct={editProduct} fetchProduct={() => fetchProduct()} />
 
                             <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center">
                                 <div className="max-w-sm space-y-3">

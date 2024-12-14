@@ -2,7 +2,7 @@ import AlertIcon from "../../assets/svg/alert-circle.svg";
 import Eye from "../../assets/svg/eye.svg";
 import EyeOff from "../../assets/svg/eye-off.svg";
 
-const InputForm = ({ id, label, type, ps, error, placeholder, register, iconStart, showPassword, togglePassword, newClass, defaultValue }) => {
+const InputForm = ({ id, label, type, ps, error, placeholder, register, iconStart, showPassword, togglePassword, newClass, defaultValue, disabled }) => {
     const isPasswordField = id === "password-label";
     const finalIconEnd = error ? AlertIcon : isPasswordField && showPassword ? Eye : isPasswordField ? EyeOff : null;
     return (
@@ -14,6 +14,7 @@ const InputForm = ({ id, label, type, ps, error, placeholder, register, iconStar
                 type={type}
                 id={id}
                 defaultValue={defaultValue}
+                disabled={disabled}
                 className={`py-3 px-4 ${ps} block w-full text-[#1F2937] font-medium bg-white rounded-lg text-sm border outline-none placeholder:text-[#6B7280] placeholder:font-semibold placeholder:text-sm
     ${error ? "border-[#EF4444] focus:ring-[#EF4444]" : "border-gray-200 focus:border-blue-500 focus:ring-blue-500 focus:outline-blue-500"} ${newClass}`}
                 placeholder={placeholder}

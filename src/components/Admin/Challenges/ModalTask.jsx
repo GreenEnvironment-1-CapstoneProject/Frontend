@@ -5,9 +5,27 @@ import { Toast } from "../../../utils/function/toast";
 const ModalTask = ({ challenge }) => {
     const [formData, setFormData] = useState({
         challenge_id: "",
+        name: "",
         day_number: 1,
         task_description: "",
     });
+
+    const fetchLastDay = async () => {
+        try {
+            const response = await api.get(`/admin/challenges/${challenge?.id}/tasks`);
+
+            const tasks = response.data.data;
+
+            const lastDay = tasks?.length > 0 ? Math.max(...tasks?.map((task) => task.day_number)) : 0;
+            setCurrentDay(lastDay + 1); // Hari selanjutnya
+            setFormData((prev) => ({
+                ...prev,
+                day_number: lastDay + 1,
+            }));
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
         if (challenge?.id) {
@@ -15,6 +33,7 @@ const ModalTask = ({ challenge }) => {
                 ...prev,
                 challenge_id: challenge.id,
             }));
+            fetchLastDay();
         }
     }, [challenge]);
 
@@ -52,6 +71,7 @@ const ModalTask = ({ challenge }) => {
                 setFormData((prev) => ({
                     ...prev,
                     day_number: currentDay + 1,
+                    name: "",
                     task_description: "",
                 }));
                 setCurrentDay((prev) => prev + 1);
@@ -74,6 +94,17 @@ const ModalTask = ({ challenge }) => {
                         disabled
                         onChange={handleChange}
                         value={formData.day_number}
+                    />
+                </div>
+                <div className="flex flex-row items-center justify-between my-4">
+                    <h1 className="font-bold text-[#404040] text-base flex-[1_55%]">Nama Misi</h1>
+                    <input
+                        type="text"
+                        name="name"
+                        className="py-3 px-4 block w-full text-[#1F2937] font-medium bg-white rounded-lg text-sm border outline-none placeholder:text-[#6B7280] placeholder:font-semibold placeholder:text-sm"
+                        placeholder="Nama Misi"
+                        onChange={handleChange}
+                        value={formData.name}
                     />
                 </div>
                 <div className="flex flex-row items-center justify-between my-4">

@@ -135,14 +135,18 @@ const ModalViewChallenges = ({ challenge }) => {
                         <button className="btn btn-success border border-[#2E7D32] btn-outline !text-[#2E7D32] hover:!bg-[#2E7D32] hover:!text-white" onClick={handleViewMisi}>
                             Lihat Misi
                         </button>
-                        <button className="btn btn-success !text-white bg-[#2E7D32] border border-[#2E7D32]" onClick={handleMisi} disabled={tasks?.length >= challenge?.duration_days}>
+                        <button
+                            className="btn btn-success !text-white bg-[#2E7D32] border border-[#2E7D32]"
+                            onClick={handleMisi}
+                            disabled={tasks?.length >= challenge?.duration_days || challenge?.deleted_at}
+                        >
                             Tambah Misi
                         </button>
                     </div>
                 </div>
             </dialog>
             <ModalTask challenge={challenge} />
-            <ModalViewTask tasks={tasks} />
+            <ModalViewTask tasks={tasks} setTasks={setTasks} />
         </>
     );
 };

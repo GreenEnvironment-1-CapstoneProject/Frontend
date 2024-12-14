@@ -22,6 +22,7 @@ const ChallengePage = () => {
     const [selectedChallenge, setSelectedChallenge] = useState(null);
     const [deleteChallenge, setDeleteChallenge] = useState(null);
     const [selectedPage, setSelectedPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchChallenges = async () => {
         try {
@@ -82,6 +83,14 @@ const ChallengePage = () => {
         document.getElementById("my_modal_14").showModal();
     };
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value); // Menyimpan nilai query pencarian
+    };
+
+    const filteredChallenges = challenges?.filter(
+        (impact) => impact.title.toLowerCase().includes(searchQuery.toLowerCase()), // Mencocokkan nama kategori dengan query pencarian
+    );
+
     return (
         <AdminLayout active="Tantangan">
             <div className="max-w-[100rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
@@ -105,7 +114,13 @@ const ChallengePage = () => {
                 <div className="p-3 rounded-lg bg-white border border-[#E5E7EB]">
                     <div className="pb-3">
                         <div className="relative w-[372px]">
-                            <input type="text" placeholder="Cari Produk" className="border ps-11 border-gray-300 rounded-lg h-[40px] px-4 w-full focus:outline-none focus:ring-2 focus:ring-primary" />
+                            <input
+                                type="text"
+                                placeholder="Cari Produk"
+                                className="border ps-11 border-gray-300 rounded-lg h-[40px] px-4 w-full focus:outline-none focus:ring-2 focus:ring-primary"
+                                onChange={handleSearchChange}
+                                value={searchQuery}
+                            />
                             <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
                                 <Search className="w-6 h-6 text-gray-400" />
                             </div>
@@ -134,100 +149,120 @@ const ChallengePage = () => {
                                                     <th scope="col" className={`${index === 0 ? "pe-6" : "px-6"} py-3 text-start`} key={index}>
                                                         <div className="flex items-center justify-between">
                                                             <span className="text-xs font-bold uppercase tracking-wide text-[#2E7D32]">{title}</span>
-                                                            {index > 0 && index < 6 && (
+                                                            {/* {index > 0 && index < 6 && (
                                                                 <button>
                                                                     <img src={arrowUpDown} alt="arrow-filter-icon" />
                                                                 </button>
-                                                            )}
+                                                            )} */}
                                                         </div>
                                                     </th>
                                                 ))}
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-200">
-                                            {challenges?.map((challenge) => (
-                                                <tr key={challenge.id}>
-                                                    <td className="size-px whitespace-nowrap">
-                                                        <div className="ps-6 py-2">
-                                                            <label htmlFor="hs-at-with-checkboxes-1" className="flex">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    className="shrink-0 border-gray-300 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                                                                    id="hs-at-with-checkboxes-1"
-                                                                />
-                                                                <span className="sr-only">Checkbox</span>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td className="size-px whitespace-nowrap">
-                                                        <div className="pe-6 py-2">
-                                                            <p className="text-sm font-medium text-[#1F2937] cursor-pointer" title={challenge.id}>
-                                                                {truncateText(challenge.id, 5)}
-                                                            </p>
-                                                        </div>
-                                                    </td>
-                                                    <td className="size-px whitespace-nowrap">
-                                                        <div className="px-6 py-2 flex items-center gap-x-2">
-                                                            <img className="inline-block size-[38px] rounded-full w-6 h-6" src={challenge.challenge_img} alt="Avatar" />
-                                                            <span className="text-sm font-medium text-[#1F2937] decoration-2">{challenge.title}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="size-px whitespace-nowrap">
-                                                        <div className="px-6 py-2">
-                                                            <span className="text-sm font-medium text-[#1F2937]">{challenge.duration_days}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="size-px whitespace-nowrap">
-                                                        <div className="px-6 py-2">
-                                                            <p className="text-sm font-medium text-[#1F2937]">{challenge.exp}</p>
-                                                        </div>
-                                                    </td>
-                                                    <td className="size-px whitespace-nowrap">
-                                                        <div className="px-6 py-2">
-                                                            <p className="text-sm font-medium text-[#1F2937]">{challenge.coin}</p>
-                                                        </div>
-                                                    </td>
-                                                    <td className="size-px whitespace-nowrap">
-                                                        <div className="px-6 py-2">
-                                                            <p
-                                                                className={`text-sm font-medium w-fit py-1 px-3 rounded-[100px] ${
-                                                                    challenge.difficulty === "Menengah"
-                                                                        ? "text-[#019BF4] bg-[#E6F5FE] border-2 border-[#B0E0FC]"
-                                                                        : challenge.difficulty === "Sulit"
-                                                                        ? "text-[#F05D3D] bg-[#feefec] border-2 border-[#FACDC3]"
-                                                                        : "text-[#009499] bg-[#e5f4f5] border-2 border-[#B0DEDF]"
-                                                                }`}
-                                                            >
-                                                                {challenge.difficulty}
-                                                            </p>
-                                                        </div>
-                                                    </td>
-                                                    <td className="size-px whitespace-nowrap">
-                                                        <div className="py-2">
-                                                            <div className="flex items-center gap-x-2">
-                                                                <button
-                                                                    onClick={() => {
-                                                                        handleShowChallenge(challenge);
-                                                                    }}
-                                                                >
-                                                                    <img src={eye} alt="eye-icon" />
-                                                                </button>
-                                                                <button onClick={() => handleEdit(challenge)}>
-                                                                    <img src={pencil} alt="pencil-icon" />
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => {
-                                                                        document.getElementById("my_modal_3").showModal();
-                                                                        setDeleteChallenge(challenge.id);
-                                                                    }}
-                                                                >
-                                                                    <img src={trash} alt="trash-icon" />
-                                                                </button>
-                                                            </div>
-                                                        </div>
+                                            {filteredChallenges && filteredChallenges.length > 0 ? (
+                                                filteredChallenges
+                                                    ?.sort((a, b) => {
+                                                        // Jika `deleted_at` tidak null, pindahkan ke bawah
+                                                        if (a.deleted_at && !b.deleted_at) return 1;
+                                                        if (!a.deleted_at && b.deleted_at) return -1;
+                                                        return 0; // Tetap pada posisi relatif jika sama-sama null atau tidak null
+                                                    })
+                                                    .map((challenge) => (
+                                                        <tr key={challenge.id}>
+                                                            <td className="size-px whitespace-nowrap">
+                                                                <div className="ps-6 py-2">
+                                                                    <label htmlFor="hs-at-with-checkboxes-1" className="flex">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            className="shrink-0 border-gray-300 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                                                            id="hs-at-with-checkboxes-1"
+                                                                        />
+                                                                        <span className="sr-only">Checkbox</span>
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                            <td className="size-px whitespace-nowrap">
+                                                                <div className="pe-6 py-2">
+                                                                    <p className="text-sm font-medium text-[#1F2937] cursor-pointer" title={challenge.id}>
+                                                                        {truncateText(challenge.id, 5)}
+                                                                    </p>
+                                                                </div>
+                                                            </td>
+                                                            <td className="size-px whitespace-nowrap">
+                                                                <div className="px-6 py-2 flex items-center gap-x-2">
+                                                                    <img className="inline-block size-[38px] rounded-full w-6 h-6" src={challenge.challenge_img} alt="Avatar" />
+                                                                    <span className="text-sm font-medium text-[#1F2937] decoration-2">{challenge.title}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td className="size-px whitespace-nowrap">
+                                                                <div className="px-6 py-2">
+                                                                    <span className="text-sm font-medium text-[#1F2937]">{challenge.duration_days}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td className="size-px whitespace-nowrap">
+                                                                <div className="px-6 py-2">
+                                                                    <p className="text-sm font-medium text-[#1F2937]">{challenge.exp}</p>
+                                                                </div>
+                                                            </td>
+                                                            <td className="size-px whitespace-nowrap">
+                                                                <div className="px-6 py-2">
+                                                                    <p className="text-sm font-medium text-[#1F2937]">{challenge.coin}</p>
+                                                                </div>
+                                                            </td>
+                                                            <td className="size-px whitespace-nowrap">
+                                                                <div className="px-6 py-2">
+                                                                    <p
+                                                                        className={`text-sm font-medium w-fit py-1 px-3 rounded-[100px] ${
+                                                                            challenge.difficulty === "Menengah"
+                                                                                ? "text-[#019BF4] bg-[#E6F5FE] border-2 border-[#B0E0FC]"
+                                                                                : challenge.difficulty === "Sulit"
+                                                                                ? "text-[#F05D3D] bg-[#feefec] border-2 border-[#FACDC3]"
+                                                                                : "text-[#009499] bg-[#e5f4f5] border-2 border-[#B0DEDF]"
+                                                                        }`}
+                                                                    >
+                                                                        {challenge.difficulty}
+                                                                    </p>
+                                                                </div>
+                                                            </td>
+                                                            <td className="size-px whitespace-nowrap">
+                                                                <div className="py-2">
+                                                                    <div className="flex items-center gap-x-2">
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                handleShowChallenge(challenge);
+                                                                            }}
+                                                                        >
+                                                                            <img src={eye} alt="eye-icon" />
+                                                                        </button>
+
+                                                                        {!challenge?.deleted_at && (
+                                                                            <>
+                                                                                <button onClick={() => handleEdit(challenge)}>
+                                                                                    <img src={pencil} alt="pencil-icon" />
+                                                                                </button>
+                                                                                <button
+                                                                                    onClick={() => {
+                                                                                        document.getElementById("my_modal_3").showModal();
+                                                                                        setDeleteChallenge(challenge.id);
+                                                                                    }}
+                                                                                >
+                                                                                    <img src={trash} alt="trash-icon" />
+                                                                                </button>
+                                                                            </>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan={6} className="text-center py-4">
+                                                        No data available
                                                     </td>
                                                 </tr>
-                                            ))}
+                                            )}
                                         </tbody>
                                     </table>
 
@@ -237,7 +272,7 @@ const ChallengePage = () => {
                         </div>
                     </div>
                     <ModalViewChallenges challenge={selectedChallenge} />
-                    <ModalEditChallenges selectedChallenge={selectedChallenge} />
+                    <ModalEditChallenges selectedChallenge={selectedChallenge} fetchChallenges={() => fetchChallenges()} />
 
                     <ModalDelete handleDelete={() => handleDelete(selectedChallenge)} title="Hapus tantangan" subtitle="Apa kamu yakin ingin menghapus tantangan ini?" />
 

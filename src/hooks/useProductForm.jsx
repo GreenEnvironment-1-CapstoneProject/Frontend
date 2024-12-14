@@ -110,7 +110,6 @@ const useProductForm = (fetchProduct) => {
             // Kirim data ke API
             const response = await api.post("/products", processedData);
             if (response.status === 201) {
-                console.log(response);
                 Toast.fire({
                     icon: "success",
                     title: "Produk berhasil ditambahkan!",

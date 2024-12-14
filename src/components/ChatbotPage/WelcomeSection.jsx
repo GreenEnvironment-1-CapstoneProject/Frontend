@@ -15,7 +15,9 @@ const WelcomeSection = ({ handleQuestionClick }) => {
                     <p
                         key={index}
                         className="border border-[#A1A1AA] text-[#A1A1AA] w-[320px] text-base font-normal p-4 rounded-xl max-[500px]:text-xs cursor-pointer"
-                        onClick={() => handleQuestionClick(text)}
+                        onClick={() => {
+                            console.log(text);
+                            handleQuestionClick(text)}}
                     >
                         {text}
                     </p>

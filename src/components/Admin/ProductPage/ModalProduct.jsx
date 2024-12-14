@@ -3,8 +3,8 @@ import imageBg from "../../../assets/svg/admin-icon/image.svg";
 import InputForm from "../../Login/InputForm";
 import useProductForm from "../../../hooks/useProductForm";
 
-const ModalProduct = () => {
-    const { register, handleSubmit, errors, impacts, imagePreview, handleImageChange, loading, handleModal, closeModal, onSubmit } = useProductForm();
+const ModalProduct = ({fetchProduct}) => {
+    const { register, handleSubmit, errors, impacts, imagePreview, handleImageChange, loading, handleModal, closeModal, onSubmit } = useProductForm(fetchProduct);
 
     return (
         <>

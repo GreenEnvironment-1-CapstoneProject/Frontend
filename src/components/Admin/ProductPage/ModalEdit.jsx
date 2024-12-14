@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import api from "../../../services/api";
 import { Toast } from "../../../utils/function/toast";
 
-const ModalEdit = ({ selectedProduct }) => {
-    const { impacts } = useProductForm();   
+const ModalEdit = ({ selectedProduct, fetchProduct }) => {
+    const { impacts } = useProductForm();
 
     const {
         register,
@@ -92,7 +92,8 @@ const ModalEdit = ({ selectedProduct }) => {
                 icon: "success",
                 title: "sukses update Produk",
             });
-            window.location.reload();
+            document.getElementById("my_modal_2").close();
+            fetchProduct();
         } catch (error) {
             console.log(error);
         }
