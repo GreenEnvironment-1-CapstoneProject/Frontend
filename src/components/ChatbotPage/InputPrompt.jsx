@@ -1,65 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
 import BubbleChat from "./BubbleChat";
 import api from "../../services/api";
 
-const InputPrompt = ({ onSubmit }) => {
-    const { chatID } = useParams(); // Ambil chatID dari URL
+const InputPrompt = ({ onSubmit, chatID }) => {
     const { register, handleSubmit, reset } = useForm();
     const [userMessage, setUserMessage] = useState("");
     const [botMessage, setBotMessage] = useState("");
-    const [chatHistory, setChatHistory] = useState([]); // Untuk riwayat percakapan
+    const [chatHistory, setChatHistory] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Fungsi untuk mengambil riwayat chat
-    const getChatHistory = async (chatID) => {
+    const getChatHistory = async () => {
         try {
             const response = await api.get(`/chatbots/${chatID}`);
-            return response.data;
+            setChatHistory(response.data);
         } catch (error) {
             console.error("Error fetching chat history:", error.message);
-            throw error;
         }
     };
 
-    // Fungsi untuk mengirim pesan
     const sendChatMessage = async (message) => {
         try {
-            const response = await api.post(`/chatbots`, { message }); // Tetap gunakan endpoint POST
+            const response = await api.post("/chatbots", { message });
             return response.data;
         } catch (error) {
             console.error("Error:", error.message);
-            throw error;
         }
     };
 
-    // Fetch riwayat chat saat komponen di-mount
     useEffect(() => {
-        const fetchHistory = async () => {
-            try {
-                const history = await getChatHistory(chatID);
-                setChatHistory(history);
-            } catch (error) {
-                console.error("Gagal mengambil riwayat chat:", error);
-            }
-        };
-
-        if (chatID) fetchHistory();
+        if (chatID) {
+            getChatHistory();
+        }
     }, [chatID]);
 
     const onSubmitHandler = async (data) => {
-        if (!data.message.trim()) {
-            console.error("Pesan tidak boleh kosong.");
-            return;
-        }
-
+        if (!data.message.trim()) return;
         setIsLoading(true);
         setUserMessage(data.message);
         setBotMessage("");
         reset();
         onSubmit(data);
-
         try {
             const response = await sendChatMessage(data.message);
             setBotMessage(response?.data?.message || "Tanggapan tidak tersedia.");
@@ -72,16 +53,18 @@ const InputPrompt = ({ onSubmit }) => {
 
     return (
         <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-full max-w-[968px] px-4">
-            {/* Render Chat History */}
             <div className="mb-4">
                 {chatHistory.map((chat, index) => (
-                    <BubbleChat key={index} message={chat.userMessage} response={chat.botMessage} />
+                    <BubbleChat
+                        key={index}
+                        message={chat.userMessage}
+                        response={chat.botMessage}
+                    />
                 ))}
                 {userMessage && <BubbleChat message={userMessage} />}
                 {botMessage && <BubbleChat response={botMessage} />}
             </div>
 
-            {/* Form Input */}
             <form className="relative" onSubmit={handleSubmit(onSubmitHandler)}>
                 <input
                     type="text"
